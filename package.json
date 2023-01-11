@@ -2,13 +2,25 @@
   "name": "librarywebsite",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
-  "dependencies": {
-    "mongoose": "^6.8.2"
-  },
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node ./bin/www.js"
   },
+  "dependencies": {
+    "debug": "^4.3.3",
+    "dotenv": "^16.0.0",
+    "ejs": "^3.1.6",
+    "express": "^4.17.3",
+    "express-session": "^1.17.2",
+    "http-errors": "^2.0.0",
+    "method-override": "^3.0.0",
+    "mongoose": "^6.8.4",
+    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "jsonwebtoken": "^8.5.1",
+    "express-async-handler": "^1.2.0",
+    "bcryptjs": "2.4.3"
+  }
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Jirachiii/LibraryWebsite.git"
