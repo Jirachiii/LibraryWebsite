@@ -2,12 +2,13 @@ import mongoose from "mongoose"
 
 const authorSchema = mongoose.Schema(
     {
-        authorName: {
+        name: {
             type: String,
             required: [true, 'Please enter author name']
         },
-        authorImage: {
+        image: {
             type: Image,
+            default: "/images/author-demo.jpg"
         },
     }
 )
