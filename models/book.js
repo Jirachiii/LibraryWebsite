@@ -1,21 +1,33 @@
 import mongoose from "mongoose"
 
+const bookTagSchema = mongoose.Schema(
+    {
+        name: {
+            type: String,
+            required: [true, "Please enter tag name"]
+        }
+    }
+)
+const BookTag = mongoose.model('BookTag', bookTagSchema, 'bookTag')
+
 const bookSchema = mongoose.Schema(
     {
-        bookname: {
+        name: {
             type: String,
-            required: [true, "Please enter book name"],
+            required: [true,"Please enter book name"],
         },
-        author: {
-            type: [author.authorName],
+        author:{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Author',
+            required: [true,"Please enter book author"]
         },
         publisher: {
-            type: String,
-            required: [true, "Please enter book publisher"],
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Publisher',
+            required: [true,"Please enter book publisher"],
         },
         language: {
             type: String,
-            required: [true, "Please enter book language"],
         },
         page: {
             type: Number,
@@ -24,41 +36,48 @@ const bookSchema = mongoose.Schema(
             type: String,
             default: "none",
         },
-        image: {
-            type: Image,
-        },
-        bookTag: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'booktag',
+        tags: {
+            type: [mongoose.Schema.Types.ObjectId],
+            ref: 'BookTag',
             required: [true, "Please enter at least one tag"],
-            default: null
         },
         rating: {
             type: Number,
-            required: [true]
+            default: 0
         },
-        bowworedTime: {
-            type: Number,
-            required: [true]
-        },
-        note: {
+        image: {
             type: String,
-            default: "none",
+            default: "/images/book-cover-demo.webp"
         },
-        availableStatus: {
+        timesBorrowed: {
             type: Number,
-            default: 1,
+            default: 0
         },
     }
 )
+const Book = mongoose.model('Book', bookSchema, 'book')
 
-const tag = mongoose.Schema(
+const bookCopySchema = mongoose.Schema(
     {
-        tagName: {
-            type: String,
+        book: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Book',
+            required: [true,"Please enter book reference"]
         },
+        condition: {
+            type: String,
+            default: 'new'
+        },
+        status: {
+            type: Boolean,
+            default: false
+        }
     }
 )
+const BookCopy = mongoose.model('BookCopy', bookCopySchema, 'bookCopy')
 
-const booktag = mongoose.model('booktag', tag)
-module.exports = mongoose.model('book', bookSchema)
+export {
+    Book,
+    BookTag,
+    BookCopy
+}
