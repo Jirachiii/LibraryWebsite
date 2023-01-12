@@ -1,170 +1,208 @@
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcryptjs'
 import asyncHandler from 'express-async-handler'
-import {User, UserType} from '../models/user.js'
-import {Coupon} from '../models/index.js'
+import {User} from '../models/user.js'
+import {Book, BookCopy} from '../models/book.js'
 import mongoose from "mongoose";
 
 
 // @desc    Register new user
 // @route   POST /api/users
 // @access  Public
-const registerUser = asyncHandler(async (req, res) => {
-    const {username, email, password} = req.body
-
-    if (!username || !email || !password) {
-        res.status(400).send('Please add all fields')
-        // throw new Error('Please add all fields')
-    }
+const registerUser = asyncHandler(async (req, res, next) => {
+    const {fullName, dob, address, email, password} = req.body
 
     // Check if user exists
-    const userExists = await User.findOne({email})
+    const userExists = await User.findOne({email: email})
 
     if (userExists) {
-        res.status(400).send('User already exists')
-        // throw new Error('User already exists')
+        req.userExists = true;
+        next()
     }
 
     // Hash password
     const salt = await bcrypt.genSalt(10)
-    const hashedPassword = await bcrypt.hash(password, salt)
+    const hashedpassword = await bcrypt.hash(password, salt)
     // Create user
-    var user = await User.create({
-        username,
-        email,
-        password: hashedPassword
-    })
+    let user
+    try {
+        user = await User.create({
+            email: email,
+            password: hashedpassword,
+            fullName: fullName,
+            dob: dob,
+            address: address
+        })
+    } catch (error) {
+        console.log(error)
+    }
 
     if (user) {
-        res.status(200).json({
-            _id: user.id,
-            username: user.username,
-            email: user.email,
-            token: generateToken(user._id),
-        })
-    } else {
-        res.status(400).send('Invalid user data')
-        // throw new Error('Invalid user data')
+        res.cookie('access_token', generateToken(user.id), { httpOnly: true })
     }
+
+    next()
 })
 
 // @desc    Authenticate a user
 // @route   POST /api/users/login
 // @access  Public
-const loginUser = asyncHandler(async (req, res) => {
+const loginUser = asyncHandler(async (req, res, next) => {
     const {email, password} = req.body
 
     // Check for user email
-    const user = await User.findOne({email})
+    const user = await User.findOne({email: email})
+
+    if (user.warning >= 3) {
+        req.deactivated = true
+        next()
+    }
 
     if (user && (await bcrypt.compare(password, user.password))) {
-        res.json({
-            _id: user.id,
-            username: user.username,
-            email: user.email,
-            token: generateToken(user._id),
-        })
+        res.cookie('access_token', generateToken(user.id), { httpOnly: true })
+        req.userExists = true
     } else {
-        res.status(400).send('Invalid credentials')
-        // throw new Error('Invalid credentials')
+        req.userExists = false
     }
+
+    next()
 })
 
-const subscribe = asyncHandler(async (req, res) => {
-    //TODO: Add payment system
-    const {status, type} = req.body
+// @desc    Terminate user session
+// @route   POST /api/users/logout
+// @access  Public
+const logoutUser = asyncHandler(async (req, res) => {
+    res.clearCookie('access_token')
+    res.redirect('/')
+})
+
+function subscribeHandler(res, subscribeType, usr, plan, bookIncrease) {
+    const numBorrowedBooks = usr.borrowAvailable - usr.maxAvailable;
+    let subscriptionTime;
+
+    switch (subscribeType.type) {
+        case 'Monthly':
+            subscriptionTime = 31 * 24 * 60 * 60000
+            break;
+        case 'Annual':
+            subscriptionTime = 365 * 24 * 60 * 60000
+            break;
+        default:
+            throw new Error('Invalid type')
+    }
+
+    if (numBorrowedBooks + subscribeType.borrowAmount + bookIncrease < 0) {
+        res.status(400).send('Negative book borrow balance! Plz return books')
+    } else {
+        usr.maxAvailable = subscribeType.borrowAmount + bookIncrease;
+        usr.borrowAvailable = numBorrowedBooks + usr.maxAvailable;
+        usr.paymentStatus = Date.now() + subscriptionTime
+    }
+}
+
+const subscribe = asyncHandler(async (req, res, next) => {
+    const {plan, type, status} = req.body
     const usr = req.user
 
-    const normalType = JSON.parse(JSON.stringify(await UserType.findOne({typeName: 'normal'})));
-    const vipType = JSON.parse(JSON.stringify(await UserType.findOne({typeName: 'vip'})));
-
-    if (status) {
-        const numBorrowedBooks = usr.borrowAvailable - usr.maxAvailable;
-        const availableCoupon = await Coupon.findOne({
-            startDate: {
-                $lte: new Date()
+    let statusUser = true
+    let message = ""
+    switch (status) {
+        case '1':
+            if (usr.subscription != null) {
+                statusUser = false
+                message = "Please unsubscribe first"
+                break;
             }
-            , endDate: {
-                $gte: new Date()
-            }
-        })
-        //Deal with null case
-        let bookIncrease;
-        if (availableCoupon){
-            bookIncrease = availableCoupon.bookAmountIncrease;
-        }else{
-            bookIncrease = 0;
-        }
-        switch (type) {
-            case '1':
-                if (numBorrowedBooks +normalType.maxBook + bookIncrease <0){
-                    res.status(400).send('Negative book borrow balance! Plz return books')
-                }else{
-                    usr.userType = mongoose.Types.ObjectId('62713cd9be4587022f6803c8');
-                    usr.maxAvailable = normalType.maxBook + bookIncrease;
-                    usr.borrowAvailable = numBorrowedBooks + usr.maxAvailable;
-                    usr.paymentStatus = Date.now() + 31*24*60*60000
-                    usr.save(function (err) {
-                        if (err)
-                        {
-                            // TODO: Handle error!
-                        }else{
-                            res.status(200).send('Success')
-                        }
-                    })
-                }
-                break;
-            case '2':
-                if (numBorrowedBooks +normalType.maxBook +bookIncrease <0){
-                    res.status(400).send('Negative book borrow balance! Plz return books')
-                }else{
-                    usr.userType = mongoose.Types.ObjectId('62713cd9be4587022f6803c8');
-                    usr.maxAvailable = normalType.maxBook + bookIncrease;
-                    usr.borrowAvailable = numBorrowedBooks + usr.maxAvailable;
-                    usr.paymentStatus = Date.now() + 365*24*60*60000
-                    usr.save(function (err) {
-                        if (err)
-                        {
-                            // TODO: Handle error!
-                        }else{
-                            res.status(200).send('Success')
-                        }
-                    })
-                }
-                break;
-            case '3':
-                if (numBorrowedBooks +vipType.maxBook +bookIncrease <0){
-                    res.status(400).send('Negative book borrow balance! Plz return books')
-                }else{
-                    usr.userType = mongoose.Types.ObjectId('62713cd9be4587022f6803c8');
-                    usr.maxAvailable = vipType.maxBook + bookIncrease;
-                    usr.borrowAvailable = numBorrowedBooks + usr.maxAvailable;
-                    usr.paymentStatus = Date.now() + 365*24*60*60000
-                    usr.save(function (err) {
-                        if (err)
-                        {
-                            // TODO: Handle error!
-                        }else{
-                            res.status(200).send('Success')
-                        }
-                    })
-                }
-                break;
-        }
-    } else {
 
+            const normalMonthlyType = await Subscription.findOne({type: 'Monthly', name: 'Normal'});
+            const normalAnnuallyType = await Subscription.findOne({type: 'Annual', name: 'Normal'});
+            const vipMonthlyType = await Subscription.findOne({type: 'Monthly', name: 'VIP'});
+            const vipAnnuallyType = await Subscription.findOne({type: 'Annual', name: 'VIP'});
+            const availableCoupon = await Coupon.findOne({
+                startDate: {
+                    $lte: new Date()
+                }
+                , endDate: {
+                    $gte: new Date()
+                }
+            })
+            //Deal with null case
+            let bookIncrease;
+            if (availableCoupon) {
+                bookIncrease = availableCoupon.bookAmountIncrease;
+            } else {
+                bookIncrease = 0;
+            }
+            switch (plan) {
+                case 'Normal':
+                    switch (type) {
+                        case 'Monthly':
+                            subscribeHandler(res, normalMonthlyType, usr, plan, bookIncrease);
+                            usr.subscription = mongoose.Types.ObjectId('629799d2c70d8f825398d57a');
+                            break;
+                        case 'Annual':
+                            subscribeHandler(res, normalAnnuallyType, usr, plan, bookIncrease);
+                            usr.subscription = mongoose.Types.ObjectId('62979aa4c70d8f825398d57b');
+                            break;
+                    }
+                    break;
+                case 'VIP':
+                    switch (type) {
+                        case 'Monthly':
+                            subscribeHandler(res, vipMonthlyType, usr, plan, bookIncrease);
+                            usr.subscription = mongoose.Types.ObjectId('62979ad0c70d8f825398d580');
+                            break;
+                        case 'Annual':
+                            subscribeHandler(res, vipAnnuallyType, usr, plan, bookIncrease);
+                            usr.subscription = mongoose.Types.ObjectId('62979afac70d8f825398d587');
+                            break;
+                    }
+                    break;
+            }
+            usr.subscriptionStatus = false
+
+            usr.save(function (err, result) {
+                if (err) {
+                    statusUser = false
+                    message = "An error has occured"
+                    console.log("Error while subscribe")
+                } else {
+                    console.log("Subscribed")
+                }
+            })
+            break;
+        case '0':
+            if (usr.subscription == null)
+                break;
+
+            User.findById(usr._id).populate('subscription').exec(function (err, usr) {
+                if (usr.borrowAvailable == usr.maxAvailable) {
+                    usr.borrowAvailable = 0;
+                    usr.maxAvailable = 0;
+                    usr.subscriptionStatus = null;
+                    usr.paymentStatus = null;
+                    usr.subscription = null;
+
+                    usr.save(function (err, result) {
+                        if (err) {
+                            statusUser = false
+                            message = "An error has occured"
+                            console.log("Error while unsubscribe")
+                        } else {
+                            console.log("Unsubscribed")
+                        }
+                    })
+                } else {
+                    message = 'Please return all books before unsubscribing / changing plans'
+                }
+            })
+            break;
     }
-})
 
-const apiDemo = asyncHandler(async (req, res) => {
-    console.log(JSON.parse(JSON.stringify(await User.find())))
-})
-
-// @desc    Get user data
-// @route   GET /api/users/me
-// @access  Private
-const getMe = asyncHandler(async (req, res) => {
-    res.status(200).json(req.user)
+    req.type = status
+    req.status = statusUser
+    req.message = message
+    next()
 })
 
 // Generate JWT
@@ -177,7 +215,6 @@ const generateToken = (id) => {
 export {
     registerUser,
     loginUser,
-    getMe,
-    apiDemo,
-    subscribe
+    logoutUser,
+    subscribe,
 }
