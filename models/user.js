@@ -2,9 +2,9 @@ import mongoose from 'mongoose'
 
 const userSchema = mongoose.Schema(
     {
-        username: {
+        email: {
             type: String,
-            required: [true, 'Please add a name'],
+            required: [true, 'Please add an email'],
             unique: true,
         },
         password: {
@@ -13,24 +13,31 @@ const userSchema = mongoose.Schema(
         },
         fullName: {
             type: String,
-            default: null
-        },
-        address: {
-            type: String,
-            default: null
+            required: [true, 'Please add a name'],
         },
         dob: {
             type: Date,
+            required: [true, 'Please add a birth date'],
+        },
+        address: {
+            type: String,
+            required: [true, 'Please add an address'],
+        },
+        type: {
+            type: String,
+            default: "normal"
+        },
+        image: {
+            type: String,
+            default: "/images/user-icon.png"
+        },
+        subscription: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Subscription',
             default: null
         },
-        email: {
-            type: String,
-            required: [true, 'Please add an email'],
-            unique: true,
-        },
-        userType: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'UserType',
+        subscriptionStatus: {
+            type: Boolean,
             default: null
         },
         paymentStatus: {
@@ -49,10 +56,6 @@ const userSchema = mongoose.Schema(
             type: Number,
             default: 0
         },
-        priority: {
-            type: Number,
-            default: 3,
-        },
         security: {
             question:{
                 type: String,
@@ -66,31 +69,8 @@ const userSchema = mongoose.Schema(
     }
 )
 
-const userTypeSchema = mongoose.Schema(
-    {
-        longestBorrowDate: {
-            type: Number
-        },
-        maxBook: {
-            type: Number
-        },
-        monthlyPrice: {
-            type: Number
-        },
-        typeName: {
-            type: String
-        },
-        yearlyPrice: {
-            type: Number
-        }
-    }
-)
-
-
-const UserType = mongoose.model('UserType', userTypeSchema,'userType')
-const User = mongoose.model('User', userSchema,'user')
+const User = mongoose.model('User', userSchema, 'user')
 
 export {
-    User,
-    UserType
+    User
 }
