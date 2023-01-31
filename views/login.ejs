@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('./partials/head'); %>
+  </head>
+
+  <body>
+    <header><%- include('./partials/nav-simple'); %></header>
+
+    <div>
+      <h2 class="fw-bold">LOGIN</h2>
+    </div>
+    <div style="height: 65%">
+      <form method="post" action="login" class="col-md-4">
+        <div class="my-3">
+          <label for="email">Email:</label>
+          <input
+            type="email"
+            name="email"
+            class="form-control"
+            id="email"
+            placeholder="Enter your email"
+          />
+        </div>
+        <div class="my-3">
+          <label for="password">Password:</label>
+          <input
+            type="password"
+            name="password"
+            class="form-control"
+            id="pwd"
+            placeholder="Enter your password"
+          />
+        </div>
+        <div class="container text-center my-4">
+          <button
+            type="submit"
+            class="btn btn-warning col-md-3"
+            name="LogInBtn"
+          >
+            Log in
+          </button>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>
