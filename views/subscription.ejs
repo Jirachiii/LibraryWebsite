@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('./partials/head'); %>
+</head>
+
+<body>
+    <header>
+        <%- include('./partials/nav'); %>
+    </header>
+
+    <main>
+        <div id="content" class="container overflow-hidden" style="min-height: 63vh;">
+            <div class="my-lg-5 d-flex justify-content-center">
+                <h2 class="fw-bold">SUBSCRIPTION AND PRICING</h2>
+            </div>
+            <div class="row mb-3 d-flex justify-content-equal" id="plans">
+                <div class="col mx-3 bg-white rounded-4 d-flex flex-column" style="height: 60vh" id="plan1">
+                    <h4 class="mt-xl-4 text-center mb-xl-5">Normal Monthly Plan</h4>
+                    <p class="fs-5">
+                        &#x2022 Maximum 5 books borrowed <br>
+                        &#x2022 Maximum 45 days of borrowing
+                    </p>
+                    <form class="mt-auto mb-4 mx-auto px-4 py-2" action="/user/subscribe" method="post">
+                        <input class="d-none" type="text" name="plan" value="Normal" />
+                        <input class="d-none" type="text" name="type" value="Monthly" />
+                        <% if (user) { %>
+                            <% if (subscription && subscription.name=="Normal" && subscription.type=="Monthly" ) { %>
+                                <input class="d-none" type="text" name="status" value="0" />
+                                <input class="btn chooseplanbtn enabledbtn" type="submit" value="Unsubscribe" />
+                                <% } else { %>
+                                    <input class="d-none" type="text" name="status" value="1" />
+                                    <input class="btn chooseplanbtn enabledbtn" type="submit" value="Choose Plan" />
+                                    <% } %>
+                                        <% } else { %>
+                                            <input class="btn chooseplanbtn disabledbtn" type="submit"
+                                                value="Choose Plan" />
+                                            <% } %>
+                    </form>
+                </div>
+                <div class="col mx-3 bg-white rounded-4 d-flex flex-column" style="height: 60vh" id="plan2">
+                    <h4 class="mt-xl-4 text-center mb-xl-5">Normal Annual Plan</h4>
+                    <p class="fs-5">
+                        &#x2022 Maximum 5 books borrowed <br>
+                        &#x2022 Maximum 45 days of borrowing
+                    </p>
+                    <form class="mt-auto mb-4 mx-auto px-4 py-2" action="/user/subscribe" method="post">
+                        <input class="d-none" type="text" name="plan" value="Normal" />
+                        <input class="d-none" type="text" name="type" value="Annual" />
+                        <% if (user) { %>
+                            <% if (subscription && subscription.name=="Normal" && subscription.type=="Annual" ) { %>
+                                <input class="d-none" type="text" name="status" value="0" />
+                                <input class="btn chooseplanbtn enabledbtn" type="submit" value="Unsubscribe" />
+                                <% } else { %>
+                                    <input class="d-none" type="text" name="status" value="1" />
+                                    <input class="btn chooseplanbtn enabledbtn" type="submit" value="Choose Plan" />
+                                    <% } %>
+                                        <% } else { %>
+                                            <input class="btn chooseplanbtn disabledbtn" type="submit"
+                                                value="Choose Plan" />
+                                            <% } %>
+                    </form>
+                </div>
+                <div class="col mx-3 bg-white rounded-4 d-flex flex-column" style="height: 60vh" id="plan3">
+                    <h4 class="mt-xl-4 text-center mb-xl-5">VIP Monthly Plan</h4>
+                    <p class="fs-5">
+                        &#x2022 Maximum 8 books borrowed <br>
+                        &#x2022 Maximum 60 days of borrowing <br>
+                        &#x2022 Has access to limited access documents of the library
+                    </p>
+                    <form class="mt-auto mb-4 mx-auto px-4 py-2" action="/user/subscribe" method="post">
+                        <input class="d-none" type="text" name="plan" value="VIP" />
+                        <input class="d-none" type="text" name="type" value="Monthly" />
+                        <% if (user) { %>
+                            <% if (subscription && subscription.name=="VIP" && subscription.type=="Monthly" ) { %>
+                                <input class="d-none" type="text" name="status" value="0" />
+                                <input class="btn chooseplanbtn enabledbtn" type="submit" value="Unsubscribe" />
+                                <% } else { %>
+                                    <input class="d-none" type="text" name="status" value="1" />
+                                    <input class="btn chooseplanbtn enabledbtn" type="submit" value="Choose Plan" />
+                                    <% } %>
+                                        <% } else { %>
+                                            <input class="btn chooseplanbtn disabledbtn" type="submit"
+                                                value="Choose Plan" />
+                                            <% } %>
+                    </form>
+                </div>
+                <div class="col mx-3 bg-white rounded-4 d-flex flex-column" style="height: 60vh" id="plan4">
+                    <h4 class="mt-xl-4 text-center mb-xl-5">VIP Annual Plan</h4>
+                    <p class="fs-5">
+                        &#x2022 Maximum 8 books borrowed <br>
+                        &#x2022 Maximum 60 days of borrowing <br>
+                        &#x2022 Has access to limited access documents of the library
+                    </p>
+                    <form class="mt-auto mb-4 mx-auto px-4 py-2" action="/user/subscribe" method="post">
+                        <input class="d-none" type="text" name="plan" value="VIP" />
+                        <input class="d-none" type="text" name="type" value="Annual" />
+                        <% if (user) { %>
+                            <% if (subscription && subscription.name=="VIP" && subscription.type=="Annual" ) { %>
+                                <input class="d-none" type="text" name="status" value="0" />
+                                <input class="btn chooseplanbtn enabledbtn" type="submit" value="Unsubscribe" />
+                                <% } else { %>
+                                    <input class="d-none" type="text" name="status" value="1" />
+                                    <input class="btn chooseplanbtn enabledbtn" type="submit" value="Choose Plan" />
+                                    <% } %>
+                                        <% } else { %>
+                                            <input class="btn chooseplanbtn disabledbtn" type="submit"
+                                                value="Choose Plan" />
+                                            <% } %>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <%- include('./partials/footer'); %>
+    </footer>
+</body>
+
+</html>
