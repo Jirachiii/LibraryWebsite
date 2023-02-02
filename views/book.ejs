@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('./partials/head'); %>
+  </head>
+
+  <body>
+    <header><%- include('./partials/nav'); %></header>
+
+    <main>
+      <h2 class="fw-bold mt-5 ms-5" style="text-align: center; font-size: 45">
+        BOOKS
+      </h2>
+
+      <div class="mt-4 my-5 mr-5 d-flex justify-content-end container">
+        <a
+          class="me-2 btn chooseplanbtn enabledbtn fw-normal"
+          data-bs-toggle="dropdown"
+          style="font-size: 14px"
+          >Filter <span class="fa fa-sliders"></span
+        ></a>
+        <ul class="dropdown-menu" id="filter">
+          <% for (var i = 1; i < tags.length; i++) { %>
+          <li>
+            <a
+              href="/books?filter=<%=tags[i]._id.toString()%>"
+              class="dropdown-item"
+              ><%= tags[i].name %></a
+            >
+          </li>
+          <% } %>
+        </ul>
+      </div>
+
+      <div
+        id="content"
+        class="container bg-white rounded-4 my-5"
+        style="min-height: 63vh; width: auto"
+      >
+        <div id="booksCarousel" class="carousel slide" data-bs-ride="carousel">
+          <div class="carousel-inner" role="listbox">
+            <div class="carousel-item active px-5">
+              <% for (var i = 0; i < 2; i++) { %>
+              <div class="carousel-row row m-5 justify-content-around">
+                <% for (var j = i * 4; j < i * 4 + 4; j++) { %> <% if (j >=
+                books.length) { break; } %>
+                <form
+                  class="col-2 preview"
+                  action="books/book-details"
+                  method="get"
+                >
+                  <input
+                    class="rounded-4 img-medium"
+                    type="image"
+                    src="<%= books[j].image %>"
+                    alt="Submit"
+                  />
+                  <input
+                    readonly
+                    class="d-none"
+                    type="text"
+                    name="id"
+                    value="<%= books[j]._id %>"
+                  />
+                  <input
+                    readonly
+                    class="row fw-bold mt-3 text text-title"
+                    type="text"
+                    value="<%= books[j].name %>"
+                  />
+                  <input
+                    readonly
+                    class="row fw-light text text-subtitle"
+                    type="text"
+                    value="<%= authors[j].name %>"
+                  />
+                </form>
+                <% } %>
+              </div>
+              <% } %>
+            </div>
+            <% for (var i = 8; i < books.length; i += 8) { %>
+            <div class="carousel-item px-5">
+              <% for (var j = 0; j < 2; j++) { %>
+              <div class="carousel-row row m-5 justify-content-around">
+                <% for (var k = i + j * 4; k < i + j * 4 + 4; k++) { %> <% if (k
+                >= books.length) { break; } %>
+                <form
+                  class="col-2 preview"
+                  action="books/book-details"
+                  method="get"
+                >
+                  <input
+                    class="rounded-4 img-medium"
+                    type="image"
+                    src="<%= books[k].image %>"
+                    alt="Submit"
+                  />
+                  <input
+                    readonly
+                    class="d-none"
+                    type="text"
+                    name="id"
+                    value="<%= books[k]._id %>"
+                  />
+                  <input
+                    readonly
+                    class="row fw-bold mt-3 text text-title"
+                    type="text"
+                    value="<%= books[k].name %>"
+                  />
+                  <input
+                    readonly
+                    class="row fw-light text text-subtitle"
+                    type="text"
+                    value="<%= authors[k].name %>"
+                  />
+                </form>
+                <% } %>
+              </div>
+              <% } %>
+            </div>
+            <% } %>
+          </div>
+          <button
+            class="carousel-control-prev"
+            type="button"
+            data-bs-target="#booksCarousel"
+            data-bs-slide="prev"
+          >
+            <span class="fa fa-angle-left fa-4x" style="color: #8b8b8b"></span>
+            <span class="visually-hidden">Previous</span>
+          </button>
+          <button
+            class="carousel-control-next"
+            type="button"
+            data-bs-target="#booksCarousel"
+            data-bs-slide="next"
+          >
+            <span class="fa fa-angle-right fa-4x" style="color: #8b8b8b"></span>
+            <span class="visually-hidden">Next</span>
+          </button>
+        </div>
+      </div>
+      >
+    </main>
+
+    <footer><%- include('./partials/footer'); %></footer>
+  </body>
+</html>
