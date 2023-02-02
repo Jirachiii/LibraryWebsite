@@ -1,10 +1,39 @@
 <!DOCTYPE html>
-<html>
-  <main>
-    <div id="content" class="container" style="height: fit-content">
-      <div id="intro">
-        <p>Welcome to the eNational Library website</p>
+<html lang="en">
+  <head>
+    <%- include('./partials/head'); %>
+  </head>
+  <body>
+    <main>
+      <div id="content" class="container" style="height: fit-content">
+        <div id="intro">
+          <div>
+            <p>Welcome to the eNational Library website</p>
+            <div class="row justify-content-evenly">
+              <div class="col text-center flex-column">
+                <p class="h1 homeintro mb-0 py-0">10000</p>
+                <p class="h3 homeintro">Books</p>
+              </div>
+              <div class="col text-center flex-column">
+                <p class="h1 homeintro mb-0 py-0">2000</p>
+                <p class="h3 homeintro">Authors</p>
+              </div>
+              <div class="col text-center flex-column">
+                <p class="h1 homeintro mb-0 py-0">80000</p>
+                <p class="h3 homeintro">Subscribers</p>
+              </div>
+            </div>
+            <div class="row align-self-start justify-content-center">
+              <a
+                class="btn col-5 chooseplanbtn enabledbtn fw-normal"
+                style="font-size: 24px; color: white"
+                href="/subscriptions"
+                >SUBSCRIBE NOW</a
+              >
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-  </main>
+    </main>
+  </body>
 </html>
