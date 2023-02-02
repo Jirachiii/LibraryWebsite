@@ -1,6 +1,7 @@
 import { Router } from 'express'
-import { authenticate } from '../middlewares/auth.js'
+import { authenticate, authorizeAdmin, authorizeStaff } from '../middlewares/auth.js'
 import { getTags, getBooks, getBookInfo, addBook, removeBook } from '../controllers/book.js'
+import { getBorrowStatus } from '../middlewares/order.js'
 
 const router = Router()
 
@@ -15,7 +16,7 @@ router.get('/', authenticate, getTags, getBooks, function(req, res) {
         })
 })
 
-router.get('/book-details', authenticate, getBookInfo, function (req, res) {
+router.get('/book-details', authenticate, getBookInfo, getBorrowStatus, function (req, res) {
     res.render('book-details',
         {
             title: 'Book Details',
@@ -31,7 +32,7 @@ router.get('/book-details', authenticate, getBookInfo, function (req, res) {
         })
 })
 
-router.post('/addBook', authenticate, function(req, res, next) {
+router.post('/addBook', authenticate, authorizeAdmin, authorizeStaff, function(req, res, next) {
     const authorized = (req.authorizedAdmin || req.authorizedStaff) ? true : false
     if (authorized) {
         next()
@@ -42,7 +43,7 @@ router.post('/addBook', authenticate, function(req, res, next) {
     res.redirect('/user/admin-tools/books')
 })
 
-router.post('/removeBook', authenticate, function(req, res, next) {
+router.post('/removeBook', authenticate, authorizeAdmin, authorizeStaff, function(req, res, next) {
     const authorized = (req.authorizedAdmin || req.authorizedStaff) ? true : false
     if (authorized) {
         next()
