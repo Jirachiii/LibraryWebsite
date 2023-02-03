@@ -52,4 +52,7 @@ const authorizeVIP = asyncHandler(async (req, res, next) => {
 
 export {
   authenticate,
+  authorizeAdmin,
+  authorizeStaff,
+  authorizeVIP
 }
