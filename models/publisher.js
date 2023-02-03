@@ -4,7 +4,7 @@ const publisherSchema = mongoose.Schema(
     {
         name: {
             type: String,
-            required: [true,'Please enter publisher name']
+            required: [true, 'Please enter publisher name']
         },
         image: {
             type: String,
