@@ -48,6 +48,18 @@ const getTags = asyncHandler(async (req, res, next) =>{
 	next()
 })
 
+const getSpecialDocs = asyncHandler(async (req, res, next) =>{
+	req.books = await Book.find({ tags: mongoose.Types.ObjectId('6271e1b3be4587022f6803fb') })
+
+	const authors = []
+	for (var i = 0; i < req.books.length; i++) {
+		authors[i] = await Author.findOne({ _id: req.books[i].author })
+	}
+	req.authors = authors
+
+	next()
+})
+
 const addBook = asyncHandler(async (req, res, next) =>{
 	try {
 		const { total } = req.body
@@ -114,5 +126,6 @@ export {
 	getBookInfo,
 	addBook,
 	removeBook,
-	getTags
+	getTags,
+	getSpecialDocs
 }

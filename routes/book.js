@@ -1,6 +1,6 @@
 import { Router } from 'express'
-import { authenticate, authorizeAdmin, authorizeStaff } from '../middlewares/auth.js'
-import { getTags, getBooks, getBookInfo, addBook, removeBook } from '../controllers/book.js'
+import { authenticate, authorizeAdmin, authorizeStaff, authorizeVIP } from '../middlewares/auth.js'
+import { getBooks, getBookInfo, getTags, getSpecialDocs, addBook, removeBook } from '../controllers/book.js'
 import { getBorrowStatus } from '../middlewares/order.js'
 
 const router = Router()
@@ -30,6 +30,21 @@ router.get('/book-details', authenticate, getBookInfo, getBorrowStatus, function
             total: req.total ? req.total : 0,
             borrowing: req.borrowing ? req.borrowing : null
         })
+})
+
+router.get('/special-docs', authenticate, authorizeVIP, authorizeStaff, authorizeAdmin, getSpecialDocs, function (req, res) {
+    const authorized = (req.authorizedStaff || req.authorizedAdmin || req.authorizedVIP) ? true : false
+    if (authorized) {
+        res.render('special-docs',
+            {
+                title: 'Special Documents',
+                user: req.user ? req.user : null,
+                books: req.books ? req.books : null,
+                authors: req.authors ? req.authors : null
+            })
+    } else {
+        res.status(400).send('Unauthorized access')
+    }
 })
 
 router.post('/addBook', authenticate, authorizeAdmin, authorizeStaff, function(req, res, next) {
