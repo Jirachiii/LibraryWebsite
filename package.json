@@ -4,21 +4,22 @@
   "description": "",
   "type": "module",
   "scripts": {
-    "start": "node ./bin/www.js"
+    "start": "node ./bin/www.js",
+    "test": "jasmine"
   },
   "dependencies": {
+    "bcryptjs": "2.4.3",
     "debug": "^4.3.3",
     "dotenv": "^16.0.0",
     "ejs": "^3.1.6",
     "express": "^4.17.3",
+    "express-async-handler": "^1.2.0",
     "express-session": "^1.17.2",
     "http-errors": "^2.0.0",
+    "jsonwebtoken": "^8.5.1",
     "method-override": "^3.0.0",
     "mongoose": "^6.8.2",
-    "morgan": "^1.10.0",
-    "jsonwebtoken": "^8.5.1",
-    "express-async-handler": "^1.2.0",
-    "bcryptjs": "2.4.3"
+    "morgan": "^1.10.0"
   },
   "repository": {
     "type": "git",
@@ -29,5 +30,9 @@
   "bugs": {
     "url": "https://github.com/Jirachiii/LibraryWebsite/issues"
   },
-  "homepage": "https://github.com/Jirachiii/LibraryWebsite#readme"
+  "homepage": "https://github.com/Jirachiii/LibraryWebsite#readme",
+  "devDependencies": {
+    "jasmine": "^4.5.0",
+    "supertest": "^6.3.3"
+  }
 }
