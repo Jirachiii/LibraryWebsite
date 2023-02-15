@@ -2,7 +2,11 @@ import jwt from 'jsonwebtoken'
 import bcrypt from 'bcryptjs'
 import asyncHandler from 'express-async-handler'
 import {User} from '../models/user.js'
+import {Order} from '../models/order.js'
+import {Rating} from '../models/rating.js'
 import {Book, BookCopy} from '../models/book.js'
+import {Subscription} from '../models/subscription.js'
+import {Coupon} from '../models/coupon.js'
 import mongoose from "mongoose";
 
 
@@ -74,6 +78,55 @@ const loginUser = asyncHandler(async (req, res, next) => {
 const logoutUser = asyncHandler(async (req, res) => {
     res.clearCookie('access_token')
     res.redirect('/')
+})
+
+const changeUserType = asyncHandler(async (req, res, next) =>{
+    try {
+        let { id, type, uri } = req.body
+        req.redirectURI = uri
+
+        const usr = await User.findOne({_id: mongoose.Types.ObjectId(id)})
+        usr.type = type
+        usr.save()
+
+        next()
+    } catch (err) {
+        if (err.name == "ValidationError") {
+            let errors = {};
+
+            Object.keys(err.errors).forEach((key) => {
+                errors[key] = err.errors[key].message;
+            });
+            return res.status(400).send(errors);
+        }
+        console.log(err)
+        res.status(500).send("Something went wrong");
+    }
+})
+
+const removeUser = asyncHandler(async (req, res, next) =>{
+    try {
+        const { total, uri } = req.body
+        req.redirectURI = uri
+
+        for (var i = 0; i < total; i++) {
+            await User.deleteOne({_id: mongoose.Types.ObjectId(req.body[i]) })
+            await Order.deleteMany({user: mongoose.Types.ObjectId(req.body[0])})
+        }
+
+        next()
+    } catch (err) {
+        if (err.name == "ValidationError") {
+            let errors = {};
+
+            Object.keys(err.errors).forEach((key) => {
+                errors[key] = err.errors[key].message;
+            });
+            return res.status(400).send(errors);
+        }
+        console.log(err)
+        res.status(500).send("Something went wrong");
+    }
 })
 
 function subscribeHandler(res, subscribeType, usr, plan, bookIncrease) {
@@ -205,6 +258,224 @@ const subscribe = asyncHandler(async (req, res, next) => {
     next()
 })
 
+const editProfile = asyncHandler(async (req, res, next) => {
+    try {
+        const {name, dob, address, img} = req.body
+        const usr = req.user
+
+        console.log(name, dob, address)
+
+        if (name) {
+            usr.fullName = name
+        }
+        if (dob) {
+            usr.dob = dob
+        }
+        if (address) {
+            usr.address = address
+        }
+        if (img){
+            usr.img = img
+        }
+
+        usr.save()
+        next()
+    } catch (err) {
+        console.log(err)
+        res.status(400).send('Something went wrong')
+    }
+})
+
+const borrowBook = asyncHandler(async (req, res, next) => {
+    try {
+        const {id} = req.body;
+        const usr = req.user;
+
+        let borrowDate = Date.now()
+
+        const order = await Order.findOne({ user: req.user._id })
+        const book = await Book.findOne({_id: mongoose.Types.ObjectId(id)})
+        const copy = await BookCopy.findOne({ book: book._id, status: false})
+
+        var borrowingCount = 0
+        order.status.forEach((isBorrowing) => { if (isBorrowing) { borrowingCount++ } });
+
+        if (borrowingCount >= usr.maxAvailable) {
+            return res.status(400).send('Ran out of book borrow quota');
+        }
+        if (usr.subscriptionStatus == false) {
+            return res.status(400).send('Plz wait while your subscription is being processed');
+        }
+        if (usr.subscriptionStatus != true) {
+            return res.status(400).send('Plz subscribe to a plan');
+        }
+
+        if (order) {
+            const subscription = await Subscription.findOne({ _id: usr.subscription });
+            let returnDate = borrowDate + subscription.borrowDuration * 24 * 60 * 60 * 1000;
+
+            var index = order.book.length
+            for (var i = 0; i < order.book.length; i++) {
+                if (order.book[i].equals(book._id)) {
+                    index = i
+                    break;
+                }
+            }
+
+            if (index < order.book.length) {
+                order.copy[index] = copy._id
+                order.status[index] = true
+                order.borrowDate[index] = borrowDate
+                order.returnDate[index] = returnDate;
+            } else {
+                order.book.push(book._id)
+                order.copy.push(copy._id)
+                order.status.push(true)
+                order.borrowDate.push(borrowDate)
+                order.returnDate.push(returnDate)
+            }
+
+            order.save(async function (err, result) {
+                if (err) {
+                    console.log(result)
+                    res.status(400).send('Something went wrong')
+                } else {
+                    copy.status = true
+                    copy.save(function (err, result) {
+                        if (err) {
+                            console.log(result)
+                            res.status(400).send('Something went wrong')
+                        } else {
+                            next()
+                        }
+                    })
+                }
+            })
+        } else {
+            await Order.create({
+                user: usr._id,
+                book: [book._id],
+                copy: [copy._id],
+                status: [true],
+                borrowDate: [borrowDate],
+                returnDate: [returnDate]
+            })
+        }
+
+        next()
+    } catch (err) {
+        res.status(400).send('Something went wrong')
+    }
+})
+
+const returnBook = asyncHandler(async (req, res, next) => {
+    try {
+        const {id} = req.body;
+        const usr = req.user;
+
+        const order = await Order.findOne({user: usr._id})
+        const book = await Book.findOne({_id: id})
+
+        if (order) {
+            for (var i = 0; i < order.book.length; i++) {
+                if (order.book[i].equals(book._id)) {
+                    if (order.returnDate[i] < Date.now()) {
+                        usr.warning += 1;
+                        usr.save(function (err, result) {
+                            if (err) {
+                                console.log("Error")
+                            } else {
+                                console.log("Increase violation times")
+                            }
+                        })
+                    }
+
+                    order.status[i] = false
+                    order.returnDate[i] = Date.now()
+
+                    order.save(async function (err, result) {
+                        if (err) {
+                            console.log(result)
+                            res.status(400).send('Something went wrong')
+                        } else {
+                            const copy = await BookCopy.findOne({ _id: order.copy[i] })
+                            copy.status = false
+                            copy.save(function (err, result) {
+                                if (err) {
+                                    console.log(result)
+                                    res.status(400).send('Something went wrong')
+                                } else {
+                                    next()
+                                }
+                            })
+                        }
+                    })
+
+                    break
+                }
+            }
+            next()
+        } else {
+            res.status(400).send('Order not found')
+        }
+    } catch (err) {
+        console.log(err)
+        res.status(400).send('Something went wrong')
+    }
+})
+
+const rateBook = asyncHandler(async (req, res, next) => {
+    try {
+        let {rating, bookID, uri} = req.body;
+        req.redirectURI = uri
+
+        const usr = req.user;
+        const book = await Book.findOne({_id: mongoose.Types.ObjectId(bookID)});
+
+        const ratingObj = await Rating.findOne({user: usr._id, book: book._id})
+        if (ratingObj) {
+            ratingObj.rating = rating
+            ratingObj.save()
+        } else {
+            await Rating.create({ user: usr._id, book: book._id, rating: rating })
+        }
+        const ratingObjs = await Rating.find({book: book._id})
+        book.rating = book.rating + (rating - book.rating)/ratingObjs.length
+
+        book.save();
+
+        console.log(ratingObj, book)
+
+        next();
+    } catch (err) {
+        if (err.name == "ValidationError") {
+            let errors = {};
+
+            Object.keys(err.errors).forEach((key) => {
+                errors[key] = err.errors[key].message;
+            });
+            return res.status(400).send(errors);
+        }
+        console.log(err)
+        res.status(500).send("Something went wrong");
+    }
+})
+
+
+
+// @desc    Get user data
+// @route   GET /api/users/me
+// @access  Private
+const getMe = asyncHandler(async (req, res) => {
+    const usr = req.user
+    if (usr) {
+        return res.status(200).json(req.user)
+    } else {
+        return res.status(400).send('User not found')
+    }
+
+})
+
 // Generate JWT
 const generateToken = (id) => {
     return jwt.sign({id}, process.env.JWT_SECRET, {
@@ -216,5 +487,12 @@ export {
     registerUser,
     loginUser,
     logoutUser,
+    getMe,
+    changeUserType,
+    removeUser,
     subscribe,
+    borrowBook,
+    returnBook,
+    editProfile,
+    rateBook,
 }

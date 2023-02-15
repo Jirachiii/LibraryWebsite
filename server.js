@@ -2,6 +2,7 @@ import 'dotenv/config.js'
 import express from 'express'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import createError from 'http-errors'
 import session from 'express-session'
 import logger from 'morgan'
 import methodOverride from 'method-override'
@@ -12,6 +13,7 @@ import cookieParser from 'cookie-parser'
 import('./config/database.js')
 
 // require routes
+import { router as indexRouter } from './routes/index.js'
 import { router as userRouter } from './routes/user.js'
 import { router as bookRouter } from './routes/book.js'
 
@@ -52,6 +54,7 @@ app.use(
 )
 
 // router middleware
+app.use('/', indexRouter)
 app.use('/user', userRouter)
 app.use('/books', bookRouter)
 
