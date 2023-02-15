@@ -1,0 +1,598 @@
+<thead>
+    <% if (tabTitle=='Orders' ) { %>
+        <tr>
+            <th scope="col"></th>
+            <th scope="col">ID</th>
+            <th scope="col">User</th>
+            <th scope="col">Books</th>
+            <th scope="col">Latest Borrowed Copy</th>
+            <th scope="col">Borrowing Status</th>
+            <th scope="col">Borrow Date</th>
+            <th scope="col">Return Date</th>
+        </tr>
+<tbody class="table-group-divider">
+    <% for (var i=0; i < orders.length; i++) { %>
+        <tr tabindex="<%= i %>">
+            <th scope="row"><input type="checkbox" /></th>
+            <th scope="row">
+                <%= orders[i]._id.toString() %>
+            </th>
+            <th scope="row">
+                <%= orders[i].user.toString() %>
+            </th>
+            <td>
+                <% for (var j=0; j < orders[i].book.length; j++) { %>
+                    <p>
+                        <%= orders[i].book[j].toString().slice(0, 5) %>...<%= orders[i].book[j].toString().slice(20) %>
+                    </p>
+                    <% } %>
+            </td>
+            <td>
+                <% for (var j=0; j < orders[i].copy.length; j++) { %>
+                    <p>
+                        <%= orders[i].copy[j].toString().slice(0, 5) %>...<%= orders[i].copy[j].toString().slice(20) %>
+                    </p>
+                    <% } %>
+            </td>
+            <td>
+                <% for (var j=0; j < orders[i].status.length; j++) { %>
+                    <p>
+                        <%= orders[i].status[j] %>
+                    </p>
+                    <% } %>
+            </td>
+            <td>
+                <% for (var j=0; j < orders[i].borrowDate.length; j++) { %>
+                    <p>
+                        <%= orders[i].borrowDate[j].toString().substring(4, 15) %>
+                    </p>
+                    <% } %>
+            </td>
+            <td>
+                <% for (var j=0; j < orders[i].returnDate.length; j++) { %>
+                    <p>
+                        <%= orders[i].returnDate[j].toString().substring(4, 15) %>
+                    </p>
+                    <% } %>
+            </td>
+        </tr>
+        <% } %>
+</tbody>
+<form id="formRemoveOrder" action="/removeOrder" method="post">
+</form>
+<% } %>
+
+    <% if (tabTitle=='Books' ) { %>
+        <tr>
+            <th scope="col"></th>
+            <th scope="col">ID</th>
+            <th scope="col">Cover</th>
+            <th scope="col">Name</th>
+            <th scope="col">Author</th>
+            <th scope="col">Publisher</th>
+            <th scope="col">Genres</th>
+            <th scope="col">Language</th>
+            <th scope="col"># of Pages</th>
+            <th scope="col">Description</th>
+            <th scope="col">Rating</th>
+            <th scope="col">Times Borrowed</th>
+        </tr>
+        <tbody class="table-group-divider">
+            <% for (var i=0; i < books.length; i++) { %>
+                <tr tabindex="<%= i %>">
+                    <th scope="row"><input type="checkbox" /></th>
+                    <th scope="row">
+                        <%= books[i]._id.toString() %>
+                    </th>
+                    <td><img src="<%= books[i].image %>" alt="Book Cover" class="rounded" style="width: 50px;"></td>
+                    <td>
+                        <%= books[i].name %>
+                    </td>
+                    <td>
+                        <%= books[i].author.toString().slice(0, 5) %>...<%= books[i].author.toString().slice(20) %>
+                    </td>
+                    <td>
+                        <%= books[i].publisher.toString().slice(0, 5) %>...<%= books[i].publisher.toString().slice(20)
+                                %>
+                    </td>
+                    <td>
+                        <% for (var j=0; j < books[i].tags.length; j++) { %>
+                            <p>
+                                <%= books[i].tags[j].toString().slice(0, 5) %>...<%=
+                                        books[i].tags[j].toString().slice(20) %>
+                            </p>
+                            <% } %>
+                    </td>
+                    <td>
+                        <%= books[i].language %>
+                    </td>
+                    <td>
+                        <%= books[i].page %>
+                    </td>
+                    <td>
+                        <%= books[i].description.slice(0, 30) %>...
+                    </td>
+                    <td>
+                        <%= books[i].rating %>
+                    </td>
+                    <td>
+                        <%= books[i].timesBorrowed %>
+                    </td>
+                </tr>
+                <% } %>
+        </tbody>
+        <form id="formAddBook" action="/books/addBook" method="post">
+        </form>
+        <form id="formRemoveBook" action="/books/removeBook" method="post">
+        </form>
+        <% } %>
+
+            <% if (tabTitle=='Authors' ) { %>
+                <tr>
+                    <th scope="col"></th>
+                    <th scope="col">ID</th>
+                    <th scope="col">Cover</th>
+                    <th scope="col">Name</th>
+                </tr>
+                <tbody class="table-group-divider">
+                    <% for (var i=0; i < authors.length; i++) { %>
+                        <tr tabindex="<%= i %>">
+                            <th scope="row"><input type="checkbox" /></th>
+                            <th scope="row">
+                                <%= authors[i]._id.toString() %>
+                            </th>
+                            <td><img src="<%= authors[i].image %>" alt="Book Cover" class="rounded"
+                                    style="width: 50px;"></td>
+                            <td>
+                                <%= authors[i].name %>
+                            </td>
+                        </tr>
+                        <% } %>
+                </tbody>
+                <form id="formAddAuthor" action="/books/addAuthor" method="post">
+                </form>
+                <form id="formRemoveAuthor" action="/books/removeAuthor" method="post">
+                </form>
+                <% } %>
+
+                    <% if (tabTitle=='Publishers' ) { %>
+                        <tr>
+                            <th scope="col"></th>
+                            <th scope="col">ID</th>
+                            <th scope="col">Cover</th>
+                            <th scope="col">Name</th>
+                        </tr>
+                        <tbody class="table-group-divider">
+                            <% for (var i=0; i < publishers.length; i++) { %>
+                                <tr tabindex="<%= i %>">
+                                    <th scope="row"><input type="checkbox" /></th>
+                                    <th scope="row">
+                                        <%= publishers[i]._id.toString() %>
+                                    </th>
+                                    <td><img src="<%= publishers[i].image %>" alt="Book Cover" class="rounded"
+                                            style="width: 50px;"></td>
+                                    <td>
+                                        <%= publishers[i].name %>
+                                    </td>
+                                </tr>
+                                <% } %>
+                        </tbody>
+                        <form id="formAddPublisher" action="/books/addPublisher" method="post">
+                        </form>
+                        <form id="formRemovePublisher" action="/books/removePublisher" method="post">
+                        </form>
+                        <% } %>
+
+                            <% if (tabTitle=='News & Offers' ) { %>
+                                <tr>
+                                    <th scope="col"></th>
+                                    <th scope="col">ID</th>
+                                    <th scope="col">Cover</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Owner</th>
+                                    <th scope="col">Book Increase</th>
+                                    <th scope="col">Subscription Fee Decrease</th>
+                                    <th scope="col">Start Date</th>
+                                    <th scope="col">End Date</th>
+                                </tr>
+                                <tbody class="table-group-divider">
+                                    <% for (var i=0; i < coupons.length; i++) { %>
+                                        <tr tabindex="<%= i %>">
+                                            <th scope="row"><input type="checkbox" /></th>
+                                            <th scope="row">
+                                                <%= coupons[i]._id.toString() %>
+                                            </th>
+                                            <td><img src="<%= coupons[i].image %>" alt="Book Cover" class="rounded"
+                                                    style="width: 50px;"></td>
+                                            <td>
+                                                <%= coupons[i].name %>
+                                            </td>
+                                            <td>
+                                                <%= coupons[i].owner %>
+                                            </td>
+                                            <td>
+                                                <%= coupons[i].bookAmountIncrease %>
+                                            </td>
+                                            <td>
+                                                <%= coupons[i].regisPriceDecrease %>
+                                            </td>
+                                            <td>
+                                                <%= coupons[i].startDate.toString().substring(4, 15) %>
+                                            </td>
+                                            <td>
+                                                <%= coupons[i].endDate.toString().substring(4, 15) %>
+                                            </td>
+                                        </tr>
+                                        <% } %>
+                                </tbody>
+                                <form id="formAddCoupon" action="/addCoupon" method="post">
+                                </form>
+                                <form id="formRemoveCoupon" action="/removeCoupon" method="post">
+                                </form>
+                                <% } %>
+
+                                    <% if (tabTitle=='Subscription Plans' ) { %>
+                                        <tr>
+                                            <th scope="col"></th>
+                                            <th scope="col">ID</th>
+                                            <th scope="col">Name</th>
+                                            <th scope="col">Type</th>
+                                            <th scope="col">Price</th>
+                                            <th scope="col">Borrow Amount</th>
+                                            <th scope="col">Borrow Duration (Days)</th>
+                                        </tr>
+                                        <tbody class="table-group-divider">
+                                            <% for (var i=0; i < subscriptions.length; i++) { %>
+                                                <tr tabindex="<%= i %>">
+                                                    <th scope="row"><input type="checkbox" /></th>
+                                                    <th scope="row">
+                                                        <%= subscriptions[i]._id.toString() %>
+                                                    </th>
+                                                    <td>
+                                                        <%= subscriptions[i].name %>
+                                                    </td>
+                                                    <td>
+                                                        <%= subscriptions[i].type %>
+                                                    </td>
+                                                    <td>
+                                                        <%= subscriptions[i].price %>
+                                                    </td>
+                                                    <td>
+                                                        <%= subscriptions[i].borrowAmount %>
+                                                    </td>
+                                                    <td>
+                                                        <%= subscriptions[i].borrowDuration %>
+                                                    </td>
+                                                </tr>
+                                                <% } %>
+                                        </tbody>
+                                        <form id="formAddSubscription" action="/addSubscription" method="post">
+                                        </form>
+                                        <form id="formRemoveSubscription" action="/removeSubscription" method="post">
+                                        </form>
+                                        <% } %>
+
+                                            <% if (tabTitle=='Readers' ) { %>
+                                                <tr>
+                                                    <th scope="col"></th>
+                                                    <th scope="col">ID</th>
+                                                    <th scope="col">Cover</th>
+                                                    <th scope="col">Email</th>
+                                                    <th scope="col">Name</th>
+                                                    <th scope="col">Date of Birth</th>
+                                                    <th scope="col">Address</th>
+                                                    <th scope="col">Subscription</th>
+                                                    <th scope="col">Subscription Status</th>
+                                                    <th scope="col">Payment Status</th>
+                                                    <th scope="col">Warning</th>
+                                                    <% if (user.type=="admin" ) { %>
+                                                        <th scope="col"></th>
+                                                        <th scope="col"></th>
+                                                        <% } %>
+                                                </tr>
+                                                <tbody class="table-group-divider">
+                                                    <% for (var i=0; i < readers.length; i++) { %>
+                                                        <tr tabindex="<%= i %>">
+                                                            <th scope="row"><input type="checkbox" /></th>
+                                                            <th scope="row">
+                                                                <%= readers[i]._id.toString() %>
+                                                            </th>
+                                                            <td><img src="<%= readers[i].image %>" alt="Book Cover"
+                                                                    class="rounded" style="width: 50px;"></td>
+                                                            <td>
+                                                                <%= readers[i].email %>
+                                                            </td>
+                                                            <td>
+                                                                <%= readers[i].fullName %>
+                                                            </td>
+                                                            <td>
+                                                                <%= readers[i].dob.toString().substring(4, 15) %>
+                                                            </td>
+                                                            <td>
+                                                                <%= readers[i].address %>
+                                                            </td>
+                                                            <% if (readers[i].subscription) { %>
+                                                                <td>
+                                                                    <%= readers[i].subscription.toString().slice(0, 5)
+                                                                        %>...<%=
+                                                                            readers[i].subscription.toString().slice(20)
+                                                                            %>
+                                                                </td>
+                                                                <td>
+                                                                    <%= readers[i].subscriptionStatus %>
+                                                                </td>
+                                                                <% if (readers[i].subscriptionStatus==true) { %>
+                                                                    <td>
+                                                                        <%= readers[i].paymentStatus.toString().substring(4,
+                                                                            15) %>
+                                                                    </td>
+                                                                    <% } else { %>
+                                                                        <td>
+                                                                            <form action="/user/approveSubscription"
+                                                                                method="post">
+                                                                                <input class="d-none" type="text"
+                                                                                    name="id"
+                                                                                    value="<%= readers[i]._id.toString() %>" />
+                                                                                <input class="d-none" type="text"
+                                                                                    name="uri"
+                                                                                    value="/user/admin-tools/readers" />
+                                                                                <input class="btn enabledbtn"
+                                                                                    type="submit" value="Confirm" />
+                                                                            </form>
+                                                                        </td>
+                                                                        <% } %>
+                                                                            <% } else { %>
+                                                                                <td>none</td>
+                                                                                <td></td>
+                                                                                <td></td>
+                                                                                <% } %>
+                                                                                    <td>
+                                                                                        <%= readers[i].warning %>
+                                                                                    </td>
+                                                                                    <% if (user.type=="admin" ) { %>
+                                                                                        <td>
+                                                                                            <form
+                                                                                                action="/user/changeUserType"
+                                                                                                method="post">
+                                                                                                <input class="d-none"
+                                                                                                    type="text"
+                                                                                                    name="id"
+                                                                                                    value="<%= readers[i]._id.toString() %>" />
+                                                                                                <input class="d-none"
+                                                                                                    type="text"
+                                                                                                    name="type"
+                                                                                                    value="staff" />
+                                                                                                <input class="d-none"
+                                                                                                    type="text"
+                                                                                                    name="uri"
+                                                                                                    value="/user/admin-tools/staff" />
+                                                                                                <input
+                                                                                                    class="btn enabledbtn"
+                                                                                                    type="submit"
+                                                                                                    value="To Staff" />
+                                                                                            </form>
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            <form
+                                                                                                action="/user/changeUserType"
+                                                                                                method="post">
+                                                                                                <input class="d-none"
+                                                                                                    type="text"
+                                                                                                    name="id"
+                                                                                                    value="<%= readers[i]._id.toString() %>" />
+                                                                                                <input class="d-none"
+                                                                                                    type="text"
+                                                                                                    name="type"
+                                                                                                    value="admin" />
+                                                                                                <input class="d-none"
+                                                                                                    type="text"
+                                                                                                    name="uri"
+                                                                                                    value="/user/admin-tools/staff" />
+                                                                                                <input
+                                                                                                    class="btn enabledbtn"
+                                                                                                    type="submit"
+                                                                                                    value="To Admin" />
+                                                                                            </form>
+                                                                                        </td>
+                                                                                        <% } %>
+                                                        </tr>
+                                                        <% } %>
+                                                </tbody>
+                                                <form id="formRemoveUser" action="/user/removeUser" method="post">
+                                                    <input class="d-none" type="text" name="uri"
+                                                        value="/user/admin-tools/readers" />
+                                                </form>
+                                                <% } %>
+
+                                                    <% if (tabTitle=='Staff' ) { %>
+                                                        <tr>
+                                                            <th scope="col"></th>
+                                                            <th scope="col">ID</th>
+                                                            <th scope="col">Cover</th>
+                                                            <th scope="col">Email</th>
+                                                            <th scope="col">Name</th>
+                                                            <th scope="col">Date of Birth</th>
+                                                            <th scope="col">Address</th>
+                                                            <th scope="col">Type</th>
+                                                            <th scope="col">Subscription</th>
+                                                            <th scope="col">Subscription Status</th>
+                                                            <th scope="col">Payment Status</th>
+                                                            <th scope="col">Warning</th>
+                                                            <% if (user.type=="admin" ) { %>
+                                                                <th scope="col"></th>
+                                                                <th scope="col"></th>
+                                                                <% } %>
+                                                        </tr>
+                                                        <tbody class="table-group-divider">
+                                                            <% for (var i=0; i < staff.length; i++) { %>
+                                                                <tr tabindex="<%= i %>">
+                                                                    <th scope="row"><input type="checkbox" /></th>
+                                                                    <th scope="row">
+                                                                        <%= staff[i]._id.toString() %>
+                                                                    </th>
+                                                                    <td><img src="<%= staff[i].image %>"
+                                                                            alt="Book Cover" class="rounded"
+                                                                            style="width: 50px;"></td>
+                                                                    <td>
+                                                                        <%= staff[i].email %>
+                                                                    </td>
+                                                                    <td>
+                                                                        <%= staff[i].fullName %>
+                                                                    </td>
+                                                                    <td>
+                                                                        <%= staff[i].dob.toString().substring(4, 15) %>
+                                                                    </td>
+                                                                    <td>
+                                                                        <%= staff[i].address %>
+                                                                    </td>
+                                                                    <td>
+                                                                        <%= staff[i].type %>
+                                                                    </td>
+                                                                    <% if (staff[i].subscription) { %>
+                                                                        <td>
+                                                                            <%= staff[i].subscription.toString().slice(0,
+                                                                                5) %>...<%=
+                                                                                    staff[i].subscription.toString().slice(20)
+                                                                                    %>
+                                                                        </td>
+                                                                        <td>
+                                                                            <%= staff[i].subscriptionStatus %>
+                                                                        </td>
+                                                                        <% if (staff[i].subscriptionStatus==true) { %>
+                                                                            <td>
+                                                                                <%= staff[i].paymentStatus.toString().substring(4,
+                                                                                    15) %>
+                                                                            </td>
+                                                                            <% } else { %>
+                                                                                <td>
+                                                                                    <form
+                                                                                        action="/user/approveSubscription"
+                                                                                        method="post">
+                                                                                        <input class="d-none"
+                                                                                            type="text" name="id"
+                                                                                            value="<%= staff[i]._id.toString() %>" />
+                                                                                        <input class="d-none"
+                                                                                            type="text" name="uri"
+                                                                                            value="/user/admin-tools/staff" />
+                                                                                        <input class="btn enabledbtn"
+                                                                                            type="submit"
+                                                                                            value="Confirm" />
+                                                                                    </form>
+                                                                                </td>
+                                                                                <% } %>
+                                                                                    <% } else { %>
+                                                                                        <td>none</td>
+                                                                                        <td></td>
+                                                                                        <td></td>
+                                                                                        <% } %>
+                                                                                            <td>
+                                                                                                <%= staff[i].warning %>
+                                                                                            </td>
+                                                                                            <% if ((user.type=="admin" )
+                                                                                                && (staff[i].type
+                                                                                                !="admin" )) { %>
+                                                                                                <td>
+                                                                                                    <form
+                                                                                                        action="/user/changeUserType"
+                                                                                                        method="post">
+                                                                                                        <input
+                                                                                                            class="d-none"
+                                                                                                            type="text"
+                                                                                                            name="id"
+                                                                                                            value="<%= staff[i]._id.toString() %>" />
+                                                                                                        <input
+                                                                                                            class="d-none"
+                                                                                                            type="text"
+                                                                                                            name="type"
+                                                                                                            value="normal" />
+                                                                                                        <input
+                                                                                                            class="d-none"
+                                                                                                            type="text"
+                                                                                                            name="uri"
+                                                                                                            value="/user/admin-tools/readers" />
+                                                                                                        <input
+                                                                                                            class="btn enabledbtn"
+                                                                                                            type="submit"
+                                                                                                            value="To Reader" />
+                                                                                                    </form>
+                                                                                                </td>
+                                                                                                <td>
+                                                                                                    <form
+                                                                                                        action="/user/changeUserType"
+                                                                                                        method="post">
+                                                                                                        <input
+                                                                                                            class="d-none"
+                                                                                                            type="text"
+                                                                                                            name="id"
+                                                                                                            value="<%= staff[i]._id.toString() %>" />
+                                                                                                        <input
+                                                                                                            class="d-none"
+                                                                                                            type="text"
+                                                                                                            name="type"
+                                                                                                            value="admin" />
+                                                                                                        <input
+                                                                                                            class="d-none"
+                                                                                                            type="text"
+                                                                                                            name="uri"
+                                                                                                            value="/user/admin-tools/staff" />
+                                                                                                        <input
+                                                                                                            class="btn enabledbtn"
+                                                                                                            type="submit"
+                                                                                                            value="To Admin" />
+                                                                                                    </form>
+                                                                                                </td>
+                                                                                                <% } %>
+                                                                </tr>
+                                                                <% } %>
+                                                        </tbody>
+                                                        <form id="formRemoveUser" action="/user/removeUser"
+                                                            method="post">
+                                                            <input class="d-none" type="text" name="uri"
+                                                                value="/user/admin-tools/staff" />
+                                                        </form>
+                                                        <% } %>
+                                                            </thead>
+
+                                                            <script>
+                                                                function save(data, attrs, tableID) {
+                                                                    var form = document.getElementById(tableID)
+                                                                    for (var i = 0; i < data.length; i++) {
+                                                                        for (var j = 0; j < attrs.length; j++) {
+                                                                            var element = document.createElement("input")
+                                                                            element.classList.add('d-none')
+                                                                            element.type = "text"
+                                                                            element.name = attrs[j] + i
+                                                                            element.value = data[i][j]
+                                                                            form.appendChild(element)
+                                                                        }
+                                                                    }
+                                                                    var element = document.createElement("input")
+                                                                    element.classList.add('d-none')
+                                                                    element.type = "text"
+                                                                    element.name = "total"
+                                                                    element.value = data.length
+                                                                    form.appendChild(element)
+
+                                                                    form.submit()
+                                                                }
+
+                                                                function remove(data, tableID) {
+                                                                    var form = document.getElementById(tableID)
+                                                                    for (var i = 0; i < data.length; i++) {
+                                                                        var element = document.createElement("input")
+                                                                        element.classList.add('d-none')
+                                                                        element.type = "text"
+                                                                        element.name = i
+                                                                        element.value = data[i]
+                                                                        form.appendChild(element)
+                                                                    }
+                                                                    var element = document.createElement("input")
+                                                                    element.classList.add('d-none')
+                                                                    element.type = "text"
+                                                                    element.name = "total"
+                                                                    element.value = data.length
+                                                                    form.appendChild(element)
+
+                                                                    form.submit()
+                                                                }
+                                                            </script>
