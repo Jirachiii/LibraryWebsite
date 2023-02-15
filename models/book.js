@@ -14,17 +14,17 @@ const bookSchema = mongoose.Schema(
     {
         name: {
             type: String,
-            required: [true,"Please enter book name"],
+            required: [true, "Please enter book name"],
         },
-        author:{
+        author: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Author',
-            required: [true,"Please enter book author"]
+            required: [true, "Please enter book author"]
         },
         publisher: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Publisher',
-            required: [true,"Please enter book publisher"],
+            required: [true, "Please enter book publisher"],
         },
         language: {
             type: String,
@@ -62,7 +62,7 @@ const bookCopySchema = mongoose.Schema(
         book: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Book',
-            required: [true,"Please enter book reference"]
+            required: [true, "Please enter book reference"]
         },
         condition: {
             type: String,

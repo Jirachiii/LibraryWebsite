@@ -57,7 +57,7 @@ const userSchema = mongoose.Schema(
             default: 0
         },
         security: {
-            question:{
+            question: {
                 type: String,
                 default: null
             },
