@@ -7,12 +7,14 @@ const authorSchema = mongoose.Schema(
             required: [true, 'Please enter author name']
         },
         image: {
-            type: Image,
+            type: String,
             default: "/images/author-demo.jpg"
         },
     }
 )
 
-const author = mongoose.model('author', authorSchema)
+const Author = mongoose.model('author', authorSchema)
 
-module.exports = author
+export {
+    Author
+}
