@@ -23,24 +23,34 @@ const getBooks = asyncHandler(async (req, res, next) => {
 
 const getBookInfo = asyncHandler(async (req, res, next) =>{
 	const { id } = req.query
-	
+
 	req.book = await Book.findOne({ _id: mongoose.Types.ObjectId(id) });
 	req.author = await Author.findOne({ _id: req.book.author })
 	req.publisher = await Publisher.findOne({ _id: req.book.publisher })
-	
+
 	req.tags = []
 	for (var i = 0; i < req.book.tags.length; i++) {
 		req.tags[i] = await BookTag.findOne({ _id: req.book.tags[i] })
 	}
-	
+
 	if (req.user != null) {
 		req.userRating = await Rating.findOne({user: req.user._id, book: req.book._id})
 	}
-	
+
 	req.total = await BookCopy.find({ book: req.book._id }).count()
 	req.current = await BookCopy.find({ book: req.book._id, status: false }).count()
-	
+
 	next();
+})
+
+const getAuthors = asyncHandler(async (req, res, next) =>{
+	req.authors = await Author.find({})
+	next()
+})
+
+const getPublishers = asyncHandler(async (req, res, next) =>{
+	req.publishers = await Publisher.find({})
+	next()
 })
 
 const getTags = asyncHandler(async (req, res, next) =>{
@@ -65,15 +75,15 @@ const addBook = asyncHandler(async (req, res, next) =>{
 		const { total } = req.body
 
 		for (var i = 0; i < total; i++) {
-			if (await Book.findOne({name: req.body['bookname' + i], author: mongoose.Types.ObjectId(req.body['author' + i])})){
+			if (await Book.findOne({name: req.body['name' + i], author: mongoose.Types.ObjectId(req.body['author' + i])})){
 				return res.status(400).send('Book already existed');
 			}
 			const bookTagsArray = req.body['bookTag' + i].split(',').map(id => mongoose.Types.ObjectId(id));
 
 			await Book.create({
-				name: req.body['bookname' + i],
+				name: req.body['name' + i],
 				author: mongoose.Types.ObjectId(req.body['author' + i]),
-				publisher: req.body['publisher' + i],
+				publisher: mongoose.Types.ObjectId(req.body['publisher' + i]),
 				language: req.body['language' + i],
 				page: req.body['page' + i],
 				description: req.body['description' + i],
@@ -119,11 +129,6 @@ const removeBook = asyncHandler(async (req, res, next) =>{
 		console.log(err)
 		res.status(500).send("Something went wrong");
 	}
-})
-
-const getAuthors = asyncHandler(async (req, res, next) =>{
-	req.authors = await Author.find({})
-	next()
 })
 
 const addAuthor = asyncHandler(async (req, res, next) =>{
@@ -176,12 +181,6 @@ const removeAuthor = asyncHandler(async (req, res, next) =>{
 		res.status(500).send("Something went wrong");
 	}
 })
-
-const getPublishers = asyncHandler(async (req, res, next) =>{
-	req.publishers = await Publisher.find({})
-	next()
-})
-
 
 const addPublisher = asyncHandler(async (req, res, next) =>{
 	try {
@@ -238,14 +237,14 @@ const removePublisher = asyncHandler(async (req, res, next) =>{
 export {
 	getBooks,
 	getBookInfo,
+	getAuthors,
+	getPublishers,
+	getSpecialDocs,
 	addBook,
 	removeBook,
-	getTags,
-	getSpecialDocs,
-	getAuthors,
 	addAuthor,
 	removeAuthor,
-	getPublishers,
 	addPublisher,
-	removePublisher
+	removePublisher,
+	getTags
 }
