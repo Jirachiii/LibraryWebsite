@@ -1,0 +1,100 @@
+<a class="d-flex justify-content-center my-3" href="/">
+    <img src="/images/eNational-logo.png" alt="Avatar Logo" style="width:150px;">
+</a>
+<div class="mt-4 row justify-content-center">
+
+    <% if (tabTitle=='Orders' ) { %>
+        <a class="btn sidenav-checked" href="/user/admin-tools/orders">
+            <i class="me-3 fa fa-list-ul"></i><span>Orders</span>
+        </a>
+        <% } else { %>
+            <a class="btn sidenav-unchecked" href="/user/admin-tools/orders">
+                <i class="me-3 fa fa-list-ul"></i><span>Orders</span>
+            </a>
+            <% } %>
+
+                <% if (tabTitle=='Books' ) { %>
+                    <a class="btn sidenav-checked" href="/user/admin-tools/books">
+                        <i class="me-3 fa fa-book"></i><span>Books</span>
+                    </a>
+                    <% } else { %>
+                        <a class="btn sidenav-unchecked" href="/user/admin-tools/books">
+                            <i class="me-3 fa fa-book"></i><span>Books</span>
+                        </a>
+                        <% } %>
+
+                            <% if (tabTitle=='Authors' ) { %>
+                                <a class="btn sidenav-checked" href="/user/admin-tools/authors">
+                                    <i class="me-3 fa fa-pencil"></i><span>Authors</span>
+                                </a>
+                                <% } else { %>
+                                    <a class="btn sidenav-unchecked" href="/user/admin-tools/authors">
+                                        <i class="me-3 fa fa-pencil"></i><span>Authors</span>
+                                    </a>
+                                    <% } %>
+
+                                        <% if (tabTitle=='Publishers' ) { %>
+                                            <a class="btn sidenav-checked" href="/user/admin-tools/publishers">
+                                                <i class="me-3 fa fa-bookmark"></i><span>Publishers</span>
+                                            </a>
+                                            <% } else { %>
+                                                <a class="btn sidenav-unchecked" href="/user/admin-tools/publishers">
+                                                    <i class="me-3 fa fa-bookmark"></i><span>Publishers</span>
+                                                </a>
+                                                <% } %>
+
+                                                    <% if (tabTitle=='News & Offers' ) { %>
+                                                        <a class="btn sidenav-checked" href="/user/admin-tools/coupons">
+                                                            <i class="me-3 fa fa-star"></i><span>News & Offers</span>
+                                                        </a>
+                                                        <% } else { %>
+                                                            <a class="btn sidenav-unchecked"
+                                                                href="/user/admin-tools/coupons">
+                                                                <i class="me-3 fa fa-star"></i><span>News &
+                                                                    Offers</span>
+                                                            </a>
+                                                            <% } %>
+
+                                                                <% if (tabTitle=='Subscription Plans' ) { %>
+                                                                    <a class="btn sidenav-checked"
+                                                                        href="/user/admin-tools/subscriptions">
+                                                                        <i class="me-3 fa fa-id-card"></i><span>Subscription
+                                                                            Plans</span>
+                                                                    </a>
+                                                                    <% } else { %>
+                                                                        <a class="btn sidenav-unchecked"
+                                                                            href="/user/admin-tools/subscriptions">
+                                                                            <i class="me-3 fa fa-id-card"></i><span>Subscription
+                                                                                Plans</span>
+                                                                        </a>
+                                                                        <% } %>
+
+                                                                            <% if (tabTitle=='Readers' ) { %>
+                                                                                <a class="btn sidenav-checked"
+                                                                                    href="/user/admin-tools/readers">
+                                                                                    <i
+                                                                                        class="me-3 fa fa-user"></i><span>Readers</span>
+                                                                                </a>
+                                                                                <% } else { %>
+                                                                                    <a class="btn sidenav-unchecked"
+                                                                                        href="/user/admin-tools/readers">
+                                                                                        <i
+                                                                                            class="me-3 fa fa-user"></i><span>Readers</span>
+                                                                                    </a>
+                                                                                    <% } %>
+
+                                                                                        <% if (tabTitle=='Staff' ) { %>
+                                                                                            <a class="btn sidenav-checked"
+                                                                                                href="/user/admin-tools/staff">
+                                                                                                <i
+                                                                                                    class="me-3 fa fa-user-o"></i><span>Staff</span>
+                                                                                            </a>
+                                                                                            <% } else { %>
+                                                                                                <a class="btn sidenav-unchecked"
+                                                                                                    href="/user/admin-tools/staff">
+                                                                                                    <i
+                                                                                                        class="me-3 fa fa-user-o"></i><span>Staff</span>
+                                                                                                </a>
+                                                                                                <% } %>
+
+</div>

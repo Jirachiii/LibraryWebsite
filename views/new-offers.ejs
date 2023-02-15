@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('./partials/head'); %>
+</head>
+
+<body>
+    <header>
+        <%- include('./partials/nav'); %>
+    </header>
+
+    <main>
+        <div id="content" class="container" style="min-height: 63vh;">
+            <h2 class="fw-bold mt-5" style="text-align: center; font-size: 45;">NEWS & OFFERS</h2>
+            <div id="offers">
+                <% for (var i=0; i < coupons.length; i +=3) { %>
+                    <div class="row mt-5 justify-content-around">
+                        <% for (var j=i; j < i + 3; j++) { %>
+                            <% if (j>= coupons.length) { break; } %>
+                                <form class="col-3 preview" action="" method="get">
+                                    <input class="rounded-4 img-small" type="image" src="<%= coupons[j].image %>"
+                                        alt="Submit" />
+                                    <input readonly class="row fw-bold mt-3 text text-title" type="text" name="name"
+                                        value="<%= coupons[j].name %>" />
+                                    <input readonly class="row fw-light text text-subtitle" type="text" name="author"
+                                        value="<%= coupons[j].startDate %> - <%= coupons[j].endDate %>" />
+                                </form>
+                                <% } %>
+                    </div>
+                    <% } %>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <%- include('./partials/footer'); %>
+    </footer>
+</body>
+
+</html>

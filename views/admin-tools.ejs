@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('./partials/head'); %>
+</head>
+
+<body>
+    <main>
+        <div class="container-fluid h-100" style="background-color: #F4EFFB;">
+            <div class="row h-100">
+                <!-- Sidebar -->
+                <div class="bg-white col-2" style="box-shadow: 0px 0px 5px #adadaa;" id="sidenav">
+                    <%- include('./partials/nav-admin'); %>
+                </div>
+                <!-- Content -->
+                <div class="col-10 px-5" style="padding: 0;" id="page content">
+                    <div>
+                        <h2 class="fw-bold mt-3 mb-5">
+                            <%= tabTitle %>
+                        </h2>
+                    </div>
+                    <% if (user.type=='admin' ) { %>
+                        <div class="d-flex justify-content-start" style="padding: 0;">
+                            <% if ((tabTitle !='Orders' ) && (tabTitle !='Readers' ) && (tabTitle !='Staff' )) { %>
+                                <a onclick="addRow(); toggleBtnSave(true);"
+                                    class="me-2 btn chooseplanbtn enabledbtn fw-normal" style="font-size: 14px;">Add
+                                    New</a>
+                                <a onclick="deleteRow(); toggleBtnSave(true);"
+                                    class="me-2 btn chooseplanbtn enabledbtn fw-normal"
+                                    style="font-size: 14px;">Remove</a>
+                                <% } else { %>
+                                    <a onclick="deleteRow(); toggleBtnSave(true);"
+                                        class="me-2 btn chooseplanbtn enabledbtn fw-normal"
+                                        style="font-size: 14px;">Remove</a>
+                                    <% } %>
+                        </div>
+                        <% } else { %>
+                            <% if ((tabTitle=='Books' ) || (tabTitle=='Authors' ) || (tabTitle=='Publishers' ) ||
+                                (tabTitle=='News & Offers' )) { %>
+                                <div class="d-flex justify-content-start" style="padding: 0;">
+                                    <a onclick="addRow(); toggleBtnSave(true);"
+                                        class="me-2 btn chooseplanbtn enabledbtn fw-normal" style="font-size: 14px;">Add
+                                        New</a>
+                                    <a onclick="deleteRow(); toggleBtnSave(true);"
+                                        class="me-2 btn chooseplanbtn enabledbtn fw-normal"
+                                        style="font-size: 14px;">Remove</a>
+                                </div>
+                                <% } %>
+                                    <% } %>
+                                        <table id="tableDB"
+                                            class="table table table-hover table-responsive mt-4 rounded"
+                                            style="background-color: white; text-overflow: ellipsis; box-shadow: 0px 0px 5px #adadaa;">
+                                            <%- include('./partials/table'); %>
+                                        </table>
+                                        <% if (user.type=='admin' ) { %>
+                                            <a onclick="saveTable('<%= tabTitle %>'); toggleBtnSave(false);"
+                                                id="btnSave" class="btn mb-5 chooseplanbtn disabledbtn fw-normal"
+                                                style="font-size: 14px;">Save Changes</a>
+                                            <% } else { %>
+                                                <% if ((tabTitle=='Books' ) || (tabTitle=='Authors' ) ||
+                                                    (tabTitle=='Publishers' ) || (tabTitle=='News & Offers' )) { %>
+                                                    <a onclick="saveTable('<%= tabTitle %>'); toggleBtnSave(false);"
+                                                        id="btnSave"
+                                                        class="btn mb-5 chooseplanbtn disabledbtn fw-normal"
+                                                        style="font-size: 14px;">Save Changes</a>
+                                                    <% } %>
+                                                        <% } %>
+                </div>
+            </div>
+        </div>
+</body>
+
+<script>
+    var dataAdd = []
+    var dataDelete = []
+
+    const booksAttr = ['image', 'name', 'author', 'publisher', 'bookTag', 'language', 'page', 'description', 'rating', 'timesBorrowed']
+    const authorsAttr = ['image', 'name']
+    const publishersAttr = ['image', 'name']
+    const couponsAttr = ['image', 'name', 'owner', 'bookAmountIncrease', 'regisPriceDecrease', 'startDate', 'endDate']
+    const subscriptionsAttr = ['name', 'type', 'price', 'borrowAmount', 'borrowDuration']
+
+    var btnSave = document.getElementById('btnSave')
+    var table = document.getElementById('tableDB')
+    var rowCountOG = table.rows.length;
+
+    function addRow() {
+        var rowCount = table.rows.length;
+        var row = table.insertRow(rowCount);
+
+        var cell = row.insertCell(0);
+        var element = document.createElement("input")
+        element.classList.add('d-none')
+        cell.appendChild(element);
+
+        cell = row.insertCell(1);
+        element = document.createElement("input")
+        element.classList.add('d-none')
+        cell.appendChild(element);
+
+        for (var i = 2; i < table.rows[0].cells.length; i++) {
+            var cell = row.insertCell(i);
+            var element = document.createElement("input");
+            element.type = "text";
+            cell.appendChild(element);
+        }
+    }
+    function deleteRow() {
+        for (var i = 1; i < rowCountOG; i++) {
+            var checkbox = table.rows[i].cells[0].children[0];
+            if (checkbox.checked) {
+                dataDelete.push(table.rows[i].cells[1].innerText)
+                table.deleteRow(i);
+                rowCountOG--;
+                i--;
+            }
+        }
+    }
+
+    function saveTable(title) {
+        for (var i = rowCountOG; i < table.rows.length; i++) {
+            const row = []
+            for (var j = 2; j < table.rows[i].cells.length; j++) {
+                row.push(table.rows[i].cells[j].children[0].value)
+            }
+            dataAdd.push(row)
+        }
+
+        if (title == 'Books') {
+            if (dataAdd.length > 0) { save(dataAdd, booksAttr, 'formAddBook') }
+            if (dataDelete.length > 0) { remove(dataDelete, 'formRemoveBook') }
+        } else if (title == 'Authors') {
+            if (dataAdd.length > 0) { save(dataAdd, authorsAttr, 'formAddAuthor') }
+            if (dataDelete.length > 0) { remove(dataDelete, 'formRemoveAuthor') }
+        } else if (title == 'Publishers') {
+            if (dataAdd.length > 0) { save(dataAdd, publishersAttr, 'formAddPublisher') }
+            if (dataDelete.length > 0) { remove(dataDelete, 'formRemovePublisher') }
+        } else if (title == 'News & Offers') {
+            if (dataAdd.length > 0) { save(dataAdd, couponsAttr, 'formAddCoupon') }
+            if (dataDelete.length > 0) { remove(dataDelete, 'formRemoveCoupon') }
+        } else if (title == 'Subscription Plans') {
+            if (dataAdd.length > 0) { save(dataAdd, subscriptionsAttr, 'formAddSubscription') }
+            if (dataDelete.length > 0) { remove(dataDelete, 'formRemoveSubscription') }
+        } else if (title == 'Orders') {
+            if (dataDelete.length > 0) { remove(dataDelete, 'formRemoveOrder') }
+        } else {
+            if (dataDelete.length > 0) { remove(dataDelete, 'formRemoveUser') }
+        }
+
+        mode = null
+        dataAdd = []
+        dataDelete = []
+    }
+
+    function toggleBtnSave(isShow) {
+        if (isShow) {
+            btnSave.classList.remove('disabledbtn')
+            btnSave.classList.add('enabledbtn')
+        } else {
+            btnSave.classList.remove('enabledbtn')
+            btnSave.classList.add('disabledbtn')
+        }
+    }
+</script>
+
+</html>
