@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import { authenticate, authorizeAdmin, authorizeStaff, authorizeVIP } from '../middlewares/auth.js'
-import { getBooks, getBookInfo, getTags, getSpecialDocs, addBook, removeBook } from '../controllers/book.js'
+import { getBooks, getBookInfo, getTags, getSpecialDocs, addBook, removeBook, 
+    getAuthors, addAuthor, removeAuthor, addPublisher, getPublishers, removePublisher } from '../controllers/book.js'
 import { getBorrowStatus } from '../middlewares/order.js'
 
 const router = Router()
@@ -67,6 +68,68 @@ router.post('/removeBook', authenticate, authorizeAdmin, authorizeStaff, functio
     } 
 }, removeBook, function(req, res) {
     res.redirect('/user/admin-tools/books')
+})
+
+router.get('/authors', authenticate, getAuthors, function (req, res) {
+    res.render('authors',
+        {
+            title: 'Authors',
+            user: req.user ? req.user : null,
+            authors: req.authors ? req.authors : null
+        })
+})
+
+router.post('/addAuthor', authenticate, authorizeAdmin, authorizeStaff, function(req, res, next) {
+    const authorized = (req.authorizedAdmin || req.authorizedStaff) ? true : false
+    if (authorized) {
+        next()
+    } else {
+        res.status(400).send('Unauthorized access')
+    } 
+}, addAuthor, function(req, res) {
+    res.redirect('/user/admin-tools/authors')
+})
+
+router.post('/removeAuthor', authenticate, authorizeAdmin, authorizeStaff, function(req, res, next) {
+    const authorized = (req.authorizedAdmin || req.authorizedStaff) ? true : false
+    if (authorized) {
+        next()
+    } else {
+        res.status(400).send('Unauthorized access')
+    } 
+}, removeAuthor, function(req, res) {
+    res.redirect('/user/admin-tools/authors')
+})
+
+router.get('/publishers', authenticate, getPublishers, function (req, res) {
+    res.render('publishers',
+        {
+            title: 'Publishers',
+            user: req.user ? req.user : null,
+            publishers: req.publishers ? req.publishers : null
+        })
+})
+
+router.post('/addPublisher', authenticate, authorizeAdmin, authorizeStaff, function(req, res, next) {
+    const authorized = (req.authorizedAdmin || req.authorizedStaff) ? true : false
+    if (authorized) {
+        next()
+    } else {
+        res.status(400).send('Unauthorized access')
+    } 
+}, addPublisher, function(req, res) {
+    res.redirect('/user/admin-tools/publishers')
+})
+
+router.post('/removePublisher', authenticate, authorizeAdmin, authorizeStaff, function(req, res, next) {
+    const authorized = (req.authorizedAdmin || req.authorizedStaff) ? true : false
+    if (authorized) {
+        next()
+    } else {
+        res.status(400).send('Unauthorized access')
+    } 
+}, removePublisher, function(req, res) {
+    res.redirect('/user/admin-tools/publishers')
 })
 
 export { router }

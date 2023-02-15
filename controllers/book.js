@@ -121,11 +121,131 @@ const removeBook = asyncHandler(async (req, res, next) =>{
 	}
 })
 
+const getAuthors = asyncHandler(async (req, res, next) =>{
+	req.authors = await Author.find({})
+	next()
+})
+
+const addAuthor = asyncHandler(async (req, res, next) =>{
+	try {
+		const { total } = req.body
+
+		for (var i = 0; i < total; i++) {
+			if (await Author.findOne({name: req.body['name' + i]})){
+				return res.status(400).send('Author already existed');
+			}
+			await Author.create({
+				name: req.body['name' + i],
+				image: req.body['image' + i]
+			})
+		}
+			
+		next()
+	} catch (err) {
+		if (err.name == "ValidationError") {
+			let errors = {};
+
+			Object.keys(err.errors).forEach((key) => {
+				errors[key] = err.errors[key].message;
+			});
+			return res.status(400).send(errors);
+		}
+		console.log(err)
+		res.status(500).send("Something went wrong");
+	}
+})
+
+const removeAuthor = asyncHandler(async (req, res, next) =>{
+	try {
+		const { total } = req.body
+		for (var i = 0; i < total; i++) {
+			await Author.deleteOne({_id: mongoose.Types.ObjectId(req.body[i]) })
+		}
+			
+		next()
+	} catch (err) {
+		if (err.name == "ValidationError") {
+			let errors = {};
+
+			Object.keys(err.errors).forEach((key) => {
+				errors[key] = err.errors[key].message;
+			});
+			return res.status(400).send(errors);
+		}
+		console.log(err)
+		res.status(500).send("Something went wrong");
+	}
+})
+
+const getPublishers = asyncHandler(async (req, res, next) =>{
+	req.publishers = await Publisher.find({})
+	next()
+})
+
+
+const addPublisher = asyncHandler(async (req, res, next) =>{
+	try {
+		const { total } = req.body
+
+		for (var i = 0; i < total; i++) {
+			if (await Publisher.findOne({name: req.body['name' + i]})){
+				return res.status(400).send('Publisher already existed');
+			}
+
+			await Publisher.create({
+				name: req.body['name' + i],
+				image: req.body['image' + i]
+			})
+		}
+			
+		next()
+	} catch (err) {
+		if (err.name == "ValidationError") {
+			let errors = {};
+
+			Object.keys(err.errors).forEach((key) => {
+				errors[key] = err.errors[key].message;
+			});
+			return res.status(400).send(errors);
+		}
+		console.log(err)
+		res.status(500).send("Something went wrong");
+	}
+})
+
+const removePublisher = asyncHandler(async (req, res, next) =>{
+	try {
+		const { total } = req.body
+		for (var i = 0; i < total; i++) {
+			await Publisher.deleteOne({_id: mongoose.Types.ObjectId(req.body[i]) })
+		}
+			
+		next()
+	} catch (err) {
+		if (err.name == "ValidationError") {
+			let errors = {};
+
+			Object.keys(err.errors).forEach((key) => {
+				errors[key] = err.errors[key].message;
+			});
+			return res.status(400).send(errors);
+		}
+		console.log(err)
+		res.status(500).send("Something went wrong");
+	}
+})
+
 export {
 	getBooks,
 	getBookInfo,
 	addBook,
 	removeBook,
 	getTags,
-	getSpecialDocs
+	getSpecialDocs,
+	getAuthors,
+	addAuthor,
+	removeAuthor,
+	getPublishers,
+	addPublisher,
+	removePublisher
 }
