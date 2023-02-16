@@ -4,7 +4,7 @@ const authorSchema = mongoose.Schema(
     {
         name: {
             type: String,
-            required: [true, 'Please enter author name']
+            required: [true,'Please enter author name']
         },
         image: {
             type: String,
@@ -13,7 +13,7 @@ const authorSchema = mongoose.Schema(
     }
 )
 
-const Author = mongoose.model('author', authorSchema)
+const Author = mongoose.model('Author', authorSchema, 'author')
 
 export {
     Author
