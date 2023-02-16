@@ -1,97 +1,58 @@
 <div class="flex-column nav">
-  <div class="row justify-content-center">
-    <a class="col logo" href="/">
-      <img src="/images/eNational-logo.png" alt="Avatar Logo" class="rounded" />
-    </a>
-    <form
-      class="col-5 my-auto px-0"
-      id="search-box"
-      action="/search"
-      method="get"
-      autocomplete="off"
-    >
-      <div class="input-group">
-        <select name="searchMode" id="category-select" class="rounded-2">
-          <option value="books">Books</option>
-          <option value="authors">Authors</option>
-          <option value="publishers">Publishers</option>
-        </select>
-        <input
-          type="search"
-          class="form-control bg-light col-7"
-          name="searchQuery"
-          placeholder="Search for a book/author/publisher"
-          id="search-input"
-        />
-        <!-- If you don't need the search button, just delete the below span -->
-        <span class="input-group-btn" id="search-btn-container">
-          <button class="btn btn-default" type="submit" id="search-btn">
-            Search
-          </button>
-        </span>
-      </div>
-      <div id="searchDropdown"></div>
-    </form>
-    <% if (user) { %>
-    <div class="col" id="navuser">
-      <div class="col float-end dropdown d-inline">
-        <button
-          type="button"
-          style="border: none"
-          class="btn dropdown-toggle"
-          data-bs-toggle="dropdown"
-          id="username"
-          name="Username"
-        >
-          <%= user.fullName %>
-        </button>
-        <ul class="dropdown-menu dropdown-menu-end">
-          <li><a href="/user/profile" class="dropdown-item">My Profile</a></li>
-          <li><a href="/user/logout" class="dropdown-item">Log Out</a></li>
-          <% if (user.type == "staff" || user.type == "admin") { %>
-          <li>
-            <hr class="dropdown-divider" />
-          </li>
-          <li>
-            <a
-              href="/user/admin-tools/orders"
-              class="dropdown-item"
-              id="admintooloption"
-              >Admin Tools</a
-            >
-          </li>
-          <% } %>
-        </ul>
-      </div>
-      <img
-        class="col float-end rounded-circle"
-        src="/images/user-icon.png"
-        alt="User Avatar"
-        style="width: 36px"
-      />
-    </div>
-    <% } else { %>
-    <div class="col" id="navloginregbtn">
-      <a href="/user/register" class="btn float-end me-2" id="navregisterbtn"
-        >Register</a
-      >
-      <a href="/user/login" class="btn float-end me-3" id="navloginbtn"
-        >Login</a
-      >
-    </div>
-    <% } %>
-  </div>
-  <div class="row justify-content-center">
-    <div class="d-flex justify-content-center align-items-center">
-      <a href="/books" class="navbar2first">BOOKS</a>
-      <a href="/books/authors" class="navbar2">AUTHORS</a>
-      <a href="/books/publishers" class="navbar2">PUBLISHERS</a>
-      <div>
-        <a href="/books/special-docs" class="navbar2">SPECIAL DOCS</a>
-        <span class="fa fa-star checked"></span>
-      </div>
-      <a href="/coupons" class="navbar2">NEWS & OFFERS</a>
-      <a href="/subscriptions" class="navbar2">SUBSCRIPTION</a>
-    </div>
-  </div>
+	<div class="row justify-content-center">
+		<a class="col logo" href="/">
+			<img src="/images/eNational-logo.png" alt="Avatar Logo" class="rounded">
+		</a>
+		<form class="col-5 my-auto px-0" id="search-box" action="/search" method="get" autocomplete="off">
+			<div class="input-group">
+				<select name="searchMode" id="category-select" class="rounded-2">
+					<option value="books">Books</option>
+					<option value="authors">Authors</option>
+					<option value="publishers">Publishers</option>
+				</select>
+				<input type="search" class="form-control bg-light col-7" name="searchQuery" placeholder="Search for a book/author/publisher" id="search-input"/>
+				<!-- If you don't need the search button, just delete the below span -->
+				<span class="input-group-btn" id="search-btn-container">
+					<button class="btn btn-default" type="submit" id="search-btn">Search</button>
+				</span>
+			</div>
+			<div id="searchDropdown"></div>
+		</form>
+		<% if (user) { %>
+			<div class="col" id="navuser">
+				<div class="col float-end dropdown d-inline">
+					<button type="button" style="border: none;" class="btn dropdown-toggle" data-bs-toggle="dropdown" id="username" name="Username"><%= user.fullName %></button>
+					<ul class="dropdown-menu dropdown-menu-end">
+						<li><a href="/user/profile" class="dropdown-item">My Profile</a></li>
+						<li><a href="/user/logout" class="dropdown-item">Log Out</a></li>
+						<% if (user.type == "staff" || user.type == "admin") { %>
+						<li>
+							<hr class="dropdown-divider">
+						</li>
+						<li><a href="/user/admin-tools/orders" class="dropdown-item" id="admintooloption">Admin Tools</a></li>
+						<% } %>
+					</ul>
+				</div>
+				<img class="col float-end rounded-circle" src="/images/user-icon.png" alt="User Avatar" style="width: 36px">
+			</div>
+		<% } else { %>
+			<div class="col" id="navloginregbtn">
+				<a href="/user/register" class="btn float-end me-2" id="navregisterbtn">Register</a>
+				<a href="/user/login" class="btn float-end me-3" id="navloginbtn">Login</a>
+			</div>
+		<% } %>
+	</div>
+	<div class="row justify-content-center">
+		<div class="d-flex justify-content-center align-items-center">
+			<a href="/books" class="navbar2first">BOOKS</a>
+			<a href="/books/authors" class="navbar2">AUTHORS</a>
+			<a href="/books/publishers" class="navbar2">PUBLISHERS</a>
+			<div>
+				<a href="/books/special-docs" class="navbar2">SPECIAL DOCS</a>
+				<span class="fa fa-star checked"></span>
+			</div>
+			<a href="/coupons" class="navbar2">NEWS & OFFERS</a>
+			<a href="/subscriptions" class="navbar2">SUBSCRIPTION</a>
+		</div>
+	</div>
 </div>

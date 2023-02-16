@@ -1,68 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
+  <head>
     <%- include('./partials/head'); %>
-</head>
+  </head>
 
-<body>
+  <body>
     <header>
-        <%- include('./partials/nav'); %>
+      <%- include('./partials/nav'); %>
     </header>
 
     <main>
         <h2 class="fw-bold mt-5 ms-5" style="text-align: center; font-size: 45;">AUTHORS</h2>
 
         <div class="mt-4 my-5 mr-5 d-flex justify-content-end container">
-            <div class="btn px-4 py-2 chooseplanbtn enabledbtn fw-normal" style="font-size: 18px; color: black;"
-                href="">Filter <span class="fa fa-sliders"></span></div>
+            <div class="btn px-4 py-2 chooseplanbtn enabledbtn fw-normal" style="font-size: 18px; color: black;" href="">Filter <span class="fa fa-sliders"></span></div>
         </div>
 
         <div id="content" class="container bg-white rounded-4 my-5" style="min-height: 63vh; width: auto;">
             <div id="authorsCarousel" class="carousel slide" data-bs-ride="carousel">
                 <div class="carousel-inner" role="listbox">
                     <div class="carousel-item active px-5">
-                        <% for (var i=0; i < 2; i++) { %>
-                            <div class="carousel-row row m-5 justify-content-around">
-                                <% for (var j=i * 4; j < i * 4 + 4; j++) { %>
-                                    <% if (j>= authors.length) { break; } %>
-                                        <div class="col-2 text-center preview">
-                                            <img src="<%= authors[j].image %>" alt="Author Avatar" class="rounded-4"
-                                                style="width: 180px; height: 260px;">
-                                            <h5 class="fw-bold mt-3 text text-title">
-                                                <%= authors[j].name %>
-                                            </h5>
-                                        </div>
-                                        <% } %>
+                        <% for (var i = 0; i < 2; i++) { %>
+                        <div class="carousel-row row m-5 justify-content-around">
+                            <% for (var j = i * 4; j < i  * 4 + 4; j++) { %>
+                            <% if (j >= authors.length) { break; } %>
+                            <div class="col-2 text-center preview">
+                                <img src="<%= authors[j].image %>" alt="Author Avatar" class="rounded-4" style="width: 180px; height: 260px;">
+                                <h5 class="fw-bold mt-3 text text-title"><%= authors[j].name %></h5>
                             </div>
                             <% } %>
-                    </div>
-                    <% for (var i=8; i < authors.length; i +=8) { %>
-                        <div class="carousel-item px-5">
-                            <% for (var j=0; j < 2; j++) { %>
-                                <div class="carousel-row row m-5 justify-content-around">
-                                    <% for (var k=i + j * 4; k < i + j * 4 + 4; k++) { %>
-                                        <% if (k>= authors.length) { break; } %>
-                                            <div class="col-2 text-center preview">
-                                                <img src="<%= authors[k].image %>" alt="Author Avatar" class="rounded-4"
-                                                    style="width: 180px; height: 260px;">
-                                                <h5 class="fw-bold mt-3 text text-title">
-                                                    <%= authors[k].name %>
-                                                </h5>
-                                            </div>
-                                            <% } %>
-                                </div>
-                                <% } %>
                         </div>
                         <% } %>
+                    </div>
+                    <% for (var i = 8; i < authors.length; i += 8) { %>
+                    <div class="carousel-item px-5">
+                        <% for (var j = 0; j < 2; j++) { %>
+                        <div class="carousel-row row m-5 justify-content-around">
+                            <% for (var k = i + j * 4; k < i + j * 4 + 4; k++) { %>
+                            <% if (k >= authors.length) { break; } %>
+                            <div class="col-2 text-center preview">
+                                <img src="<%= authors[k].image %>" alt="Author Avatar" class="rounded-4" style="width: 180px; height: 260px;">
+                                <h5 class="fw-bold mt-3 text text-title"><%= authors[k].name %></h5>
+                            </div>
+                            <% } %>
+                        </div>
+                        <% } %>
+                    </div>
+                    <% } %>
                 </div>
-                <button class="carousel-control-prev" type="button" data-bs-target="#authorsCarousel"
-                    data-bs-slide="prev">
+                <button class="carousel-control-prev" type="button" data-bs-target="#authorsCarousel" data-bs-slide="prev">
                     <span class="fa fa-angle-left fa-4x" style="color: #8B8B8B;"></span>
                     <span class="visually-hidden">Previous</span>
                 </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#authorsCarousel"
-                    data-bs-slide="next">
+                <button class="carousel-control-next" type="button" data-bs-target="#authorsCarousel" data-bs-slide="next">
                     <span class="fa fa-angle-right fa-4x" style="color: #8B8B8B;"></span>
                     <span class="visually-hidden">Next</span>
                 </button>
@@ -71,8 +61,7 @@
     </main>
 
     <footer>
-        <%- include('./partials/footer'); %>
+      <%- include('./partials/footer'); %>
     </footer>
-</body>
-
+  </body>
 </html>

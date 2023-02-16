@@ -1,35 +1,21 @@
 <html>
-  <style>
-    div {
-      text-align: center;
-    }
-  </style>
-  <head>
-    <%- include('./partials/head'); %>
-  </head>
+    <style>
+        div {text-align: center;}
+    </style>
+    <head>
+        <%- include('./partials/head'); %>
+    </head>
 
-  <body style="background-color: white">
-    <header><%- include('./partials/nav-simple'); %></header>
-    <div>
-      <p
-        class="mt-5 mb-0"
-        style="color: #979592; font-size: 24px; font-family: Roboto ExtraLight"
-      >
-        Oops...
-      </p>
-      <div class="my-0 py-0">
-        <p
-          style="
-            color: #a688e3;
-            font-size: 126px;
-            font-family: Roboto Serif;
-            font-weight: bold;
-          "
-        >
-          404<br />Page Not Found
-        </p>
-      </div>
-      <a class="px-4 mt-4 btn enabledbtn" href="/">Back to Home Page</a>
-    </div>
-  </body>
+    <body style="background-color: white;">
+        <header>
+          <%- include('./partials/nav-simple'); %>
+        </header>
+        <div>
+            <p class="mt-5 mb-0" style="color: #979592; font-size: 24px; font-family: Roboto ExtraLight;">Oops...</p>
+            <div class="my-0 py-0">
+                <p style="color: #A688E3; font-size: 126px; font-family: Roboto Serif; font-weight: bold;">404<br>Page Not Found</p>
+            </div>
+            <a class="px-4 mt-4 btn enabledbtn" href="/">Back to Home Page</a>
+        </div>
+    </body>
 </html>

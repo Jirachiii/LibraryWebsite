@@ -3,37 +3,83 @@
   <head>
     <%- include('./partials/head'); %>
   </head>
+
   <body>
+    <header>
+      <%- include('./partials/nav'); %>
+    </header>
+
     <main>
-      <div id="content" class="container" style="height: fit-content">
-        <div id="intro">
-          <div>
-            <p>Welcome to the eNational Library website</p>
-            <div class="row justify-content-evenly">
-              <div class="col text-center flex-column">
-                <p class="h1 homeintro mb-0 py-0">10000</p>
-                <p class="h3 homeintro">Books</p>
-              </div>
-              <div class="col text-center flex-column">
-                <p class="h1 homeintro mb-0 py-0">2000</p>
-                <p class="h3 homeintro">Authors</p>
-              </div>
-              <div class="col text-center flex-column">
-                <p class="h1 homeintro mb-0 py-0">80000</p>
-                <p class="h3 homeintro">Subscribers</p>
-              </div>
+      <div id="content" class="container" style="min-height: 63vh;">
+        <div class="row my-5 bg-white rounded-4" id="intro">
+            <div class="col-7 mx-5 d-grid">
+                <p class="h1 align-self-center" style="font-size: 2.5em !important; font-weight: bolder !important;">Welcome to the eNational Library website, book lovers!</p>
+                <div class="row justify-content-evenly">
+                    <div class="col text-center flex-column">
+                        <p class="h1 homeintro mb-0 py-0">10000</p>
+                        <p class="h3 homeintro">Books</p>
+                    </div>
+                    <div class="col text-center flex-column">
+                        <p class="h1 homeintro mb-0 py-0">2000</p>
+                        <p class="h3 homeintro">Authors</p>
+                    </div>
+                    <div class="col text-center flex-column">
+                        <p class="h1 homeintro mb-0 py-0">80000</p>
+                        <p class="h3 homeintro">Subscribers</p>
+                    </div>
+                </div>
+                <div class="row align-self-start justify-content-center">
+                    <a class="btn col-5 chooseplanbtn enabledbtn fw-normal" style="font-size: 24px; color: white;" href="/subscriptions">SUBSCRIBE NOW</a>
+                </div>
             </div>
-            <div class="row align-self-start justify-content-center">
-              <a
-                class="btn col-5 chooseplanbtn enabledbtn fw-normal"
-                style="font-size: 24px; color: white"
-                href="/subscriptions"
-                >SUBSCRIBE NOW</a
-              >
+            <div class="col-1 mt-5">
+                <img src="/images/man-reading.png" alt="Man Reading" style="width: 500px;">
             </div>
-          </div>
         </div>
-      </div>
+        
+        <div class="row mt-5 mb-5 bg-white rounded-4" style="min-height: 63vh;" id="newbestbooks">
+            <h2 class="fw-bold mt-5 ms-5">NEW BEST BOOKS</h2>
+            <div class="row d-flex justify-content-center">
+                <% for (var i = 0; i < bestBooks.length; i++) { %>
+                <form class="col-2 flex-column preview" action="books/book-details" method="get">
+                    <input class="rounded-4 img-medium" type="image" src="<%= bestBooks[i].image %>" alt="Submit"/>
+                    <input readonly class="d-none" type="text" name="id" value="<%= bestBooks[i]._id %>"/>
+                    <input readonly class="row fw-bold mt-3 text text-title" type="text" value="<%= bestBooks[i].name %>"/>
+                    <input readonly class="row fw-light text text-subtitle" type="text" value="<%= bestBooksAuthors[i].name %>"/>
+                </form>
+                <% } %>
+            </div>
+        </div>
+
+        <div class="row mt-5 mb-5 bg-white rounded-4" style="min-height: 63vh;" id="topauthors">
+            <h2 class="fw-bold mt-5 ms-5">TOP AUTHORS</h2>
+            <div class="row d-flex justify-content-center">
+                <% for (var i = 0; i < bestAuthors.length; i++) { %>
+                <div class="col-2 text-center flex-column">
+                    <img src="<%= bestAuthors[i].image %>" alt="Author Avatar" class="rounded-4" style="width: 180px; height: 260px;">
+                    <h5 class="fw-bold mt-3 text text-title" ><%= bestAuthors[i].name %></h5>
+                </div>
+                <% } %>
+            </div>
+        </div>
+
+        <div class="row mt-5 mb-5 bg-white rounded-4" style="min-height: 63vh;" id="latestnews">
+            <h2 class="fw-bold mt-5 ms-5">LATEST NEWS & OFFERS</h2>
+            <div class="row d-flex justify-content-center">
+                <% for (var i = 0; i < coupons.length; i++) { %>
+                <div class="col-3 text-center flex-column">
+                    <img src="<%= coupons[i].image %>" alt="Offer Banner" class="rounded-4" style="height: 260px;">
+                    <h5 class="fw-bold mt-3 text text-title" ><%= coupons[i].name %></h5>
+                    <h5 class="fw-light text text-subtitle"><%= coupons[i].startDate %> - <%= coupons[i].endDate %></h5>
+                </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
     </main>
+
+    <footer>
+      <%- include('./partials/footer'); %>
+    </footer>
   </body>
 </html>

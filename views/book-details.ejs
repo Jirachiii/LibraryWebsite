@@ -1,201 +1,179 @@
 <!DOCTYPE html>
 <html lang="en">
+	<head>
+		<%- include('./partials/head'); %>
+	</head>
 
-<head>
-    <%- include('./partials/head'); %>
-</head>
+	<body>
+		<header>
+			<%- include('./partials/nav'); %>
+		</header>
 
-<body>
-    <header>
-        <%- include('./partials/nav'); %>
-    </header>
+		<div id="myPopup" class="popup">
+			<div class="popup-content rounded-4" style="text-align: center;">
+				<h6 class="fw-medium" style="color: white">Add book to your library?</h6>
+				<span class="d-flex justify-content-between">
+				<form class="px-4 py-2" action="/user/borrowBook" method="post">
+					<input class="d-none" type="text" name="id" value="<%= book._id %>"/>
+					<input class="btn chooseplanbtn fw-normal" style="font-size: 15px; background-color: white; color: #F7B942;"
+						type="submit" value="ADD BOOK" />
+				</form>
+				<a id="cancelBtn" class="btn px-4 py-2 chooseplanbtn fw-normal" style="font-size: 15px; background-color: white; color: #F7B942;">CANCEL</a>
+				</span>
+			</div>
+		</div>
 
-    <div id="myPopup" class="popup">
-        <div class="popup-content rounded-4" style="text-align: center;">
-            <h6 class="fw-medium" style="color: white">Add book to your library?</h6>
-            <span class="d-flex justify-content-between">
-                <form class="px-4 py-2" action="/user/borrowBook" method="post">
-                    <input class="d-none" type="text" name="id" value="<%= book._id %>" />
-                    <input class="btn chooseplanbtn fw-normal"
-                        style="font-size: 15px; background-color: white; color: #F7B942;" type="submit"
-                        value="ADD BOOK" />
-                </form>
-                <a id="cancelBtn" class="btn px-4 py-2 chooseplanbtn fw-normal"
-                    style="font-size: 15px; background-color: white; color: #F7B942;">CANCEL</a>
-            </span>
-        </div>
-    </div>
+		<h2 class="fw-bold mt-5 ms-5" style="text-align: center; font-size: 45;">BOOK DETAILS</h2>
 
-    <h2 class="fw-bold mt-5 ms-5" style="text-align: center; font-size: 45;">BOOK DETAILS</h2>
-
-    <div id="content" class="container bg-white rounded-4" style="min-height: 63vh;">
-        <div class="row mx-5 d-flex justify-content-space-between">
-            <div class="col-sm-4 mt-4 text-center flex-column">
-                <img src="<%= book.image %>" alt="Book Cover" class="rounded-4" style="width: 225px; height: 325px;">
-                <div class="mt-4 mr-5 d-flex justify-content-center">
-                    <% if (borrowing==true) { %>
-                        <form class="px-4 py-2" action="/user/returnBook" method="post">
-                            <input class="d-none" type="text" name="id" value="<%= book._id %>" />
-                            <input class="btn chooseplanbtn enabledbtn fw-normal" style="font-size: 15px; color: white;"
-                                type="submit" value="RETURN NOW" />
-                        </form>
-                        <% } else { %>
-                            <% if (user && (current> 0)) { %>
-                                <a id="borrowBtn" class="btn px-4 py-2 chooseplanbtn enabledbtn fw-normal"
-                                    style="font-size: 15px; color: white;">BORROW NOW</a>
-                                <% } else { %>
-                                    <a id="borrowBtn" class="btn px-4 py-2 chooseplanbtn disabledbtn fw-normal"
-                                        style="font-size: 15px; color: white;">BORROW NOW</a>
-                                    <% } %>
-                                        <% } %>
-                </div>
-            </div>
-            <div class="col-sm-8 mt-4 flex-column">
-                <h4 class="fw-bolder text text-title">
-                    <%= book.name %>
-                </h4>
-                <div>&nbsp;</div>
-                <h5 class="fw-medium text text-subtitle""><%= author.name %></h5>
+		<div id="content" class="container bg-white rounded-4" style="min-height: 63vh;">
+			<div class="row mx-5 d-flex justify-content-space-between">
+				<div class="col-sm-4 mt-4 text-center flex-column">
+					<img src="<%= book.image %>" alt="Book Cover" class="rounded-4" style="width: 225px; height: 325px;">
+					<div class="mt-4 mr-5 d-flex justify-content-center">
+						<% if (borrowing == true) { %>
+							<form class="px-4 py-2" action="/user/returnBook" method="post">
+								<input class="d-none" type="text" name="id" value="<%= book._id %>"/>
+								<input class="btn chooseplanbtn enabledbtn fw-normal" style="font-size: 15px; color: white;"
+									type="submit" value="RETURN NOW" />
+							</form>
+						<% } else { %>
+							<% if (user && (current > 0)) { %>
+							<a id="borrowBtn" class="btn px-4 py-2 chooseplanbtn enabledbtn fw-normal" style="font-size: 15px; color: white;">BORROW NOW</a>
+							<% } else { %>
+							<a id="borrowBtn" class="btn px-4 py-2 chooseplanbtn disabledbtn fw-normal" style="font-size: 15px; color: white;">BORROW NOW</a>
+							<% } %>
+						<% } %>
+					</div>
+				</div>  
+				<div class="col-sm-8 mt-4 flex-column">
+					<h4 class="fw-bolder text text-title"><%= book.name %></h4>
 					<div>&nbsp;</div>
-					<div id=" rating">
-                    <% for (var i=0; i < book.rating; i++) { %>
-                        <span class="fa fa-star checked"></span>
-                        <% } %>
-                            <% for (var i=book.rating; i < 5; i++) { %>
-                                <span class="fa fa-star notchecked"></span>
-                                <% } %>
-            </div>
-            <span class="description">
-                <h6 class="fw-bold">Genre: </h6>
-                <% for (var i=0; i < tags.length - 1; i++) { %>
-                    <h6 class="fw-medium">
-                        <%= tags[i].name %>,
-                    </h6>
-                    <% } %>
-                        <h6 class="fw-medium">
-                            <%= tags[tags.length - 1].name %>
-                        </h6>
-            </span>
-            <div></div>
-            <span class="description">
-                <h6 class="fw-bold">Number of pages: </h6>
-                <h6 class="fw-medium">
-                    <%= book.page %>
-                </h6>
-            </span>
-            <div></div>
-            <span class="description">
-                <h6 class="fw-bold">Book language</h6>
-                <h6 class="fw-medium">: <%= book.language %>
-                </h6>
-            </span>
-            <div></div>
-            <span class="description">
-                <h6 class="fw-bold">Publisher</h6>
-                <h6 class="fw-medium">: <%= publisher.name %>
-                </h6>
-            </span>
-            <div></div>
-            <span class="description">
-                <h6 class="fw-bold">Status</h6>
-                <% if (current> 0) { %>
-                    <h6 class="fw-medium">: Available</h6>
-                    <% } else { %>
-                        <h6 class="fw-medium">: Unvailable</h6>
-                        <% } %>
-            </span>
-            <div></div>
-            <h7 class="fw-light" style="color: #979592">
-                <%= current %> out of <%= total %> is in stock
-            </h7>
-        </div>
-    </div>
-    <div>&nbsp;</div>
-    <div>&nbsp;</div>
-    <div id="rating" class="flex-column" style="text-align: center;">
-        <h4 class="fw-bolder">Rate the book</h4>
-        <div class="shadow-sm p-3 mb-5 bg-body rounded-2" style="display: inline-block;">
-            <div class="rate">
-                <% for (var i=5; i> userRating; i--) { %>
-                    <input type="radio" id="star<%= i %>" name="rate" />
-                    <label for="star<%= i %>" title="<%= i %>" class="mx-3 fa fa-2x fa-star"></label>
-                    <% } %>
-                        <% if (userRating> 0) { %>
-                            <input type="radio" id="star<%= userRating %>" name="rate" checked />
-                            <label for="star<%= userRating %>" title="<%= userRating %>"
-                                class="mx-3 fa fa-2x fa-star"></label>
-                            <% } %>
-                                <% for (var i=userRating - 1; i> 0; i--) { %>
-                                    <input type="radio" id="star<%= i %>" name="rate" />
-                                    <label for="star<%= i %>" title="<%= i %>" class="mx-3 fa fa-2x fa-star"></label>
-                                    <% } %>
-            </div>
-            <form id="formRating" action="/user/rateBook" method="post">
-                <input class="d-none" type="text" id="formRatingValue" name="rating" />
-                <input class="d-none" type="text" name="bookID" value="<%= book._id.toString() %>" />
-                <input class="d-none" type="text" name="uri"
-                    value="/books/book-details?id=<%= book._id.toString() %>" />
-            </form>
-        </div>
-    </div>
-    <div class="mx-5 my-5">
-        <h4 class="fw-bolder">Description</h4>
-        <div>&nbsp;</div>
-        <h7 class="fw-light" style="color: #979592; overflow-wrap: break-word; word-wrap:break-word;">
-            <%= book.description %>
-        </h7>
-        <div>&nbsp;</div>
-    </div>
-    </div>
+					<h5 class="fw-medium text text-subtitle""><%= author.name %></h5>
+					<div>&nbsp;</div>
+					<div id="rating">
+						<% for (var i = 0; i < book.rating; i++) { %>
+							<span class="fa fa-star checked"></span>
+						<% } %>
+						<% for (var i = book.rating; i < 5; i++) { %>
+							<span class="fa fa-star notchecked"></span>
+						<% } %>
+					</div>
+					<span class="description">
+						<h6 class="fw-bold">Genre: </h6>
+						<% for (var i = 0; i < tags.length - 1; i++) { %>
+							<h6 class="fw-medium"><%= tags[i].name %>, </h6>
+						<% } %>
+						<h6 class="fw-medium"><%= tags[tags.length - 1].name %></h6>
+					</span>
+					<div></div>
+					<span class="description">
+						<h6 class="fw-bold">Number of pages: </h6>
+						<h6 class="fw-medium"><%= book.page %></h6>
+					</span>
+					<div></div>
+					<span class="description">
+						<h6 class="fw-bold">Book language</h6>
+						<h6 class="fw-medium">: <%= book.language %></h6>
+					</span>
+					<div></div>
+					<span class="description">
+						<h6 class="fw-bold">Publisher</h6>
+						<h6 class="fw-medium">: <%= publisher.name %></h6>
+					</span>
+					<div></div>
+					<span class="description">
+						<h6 class="fw-bold">Status</h6>
+						<% if (current > 0) { %>
+							<h6 class="fw-medium">: Available</h6>
+						<% } else { %>
+							<h6 class="fw-medium">: Unvailable</h6>
+						<% } %>
+					</span>
+					<div></div>
+					<h7 class="fw-light" style="color: #979592"><%= current %> out of <%= total %> is in stock</h7>
+				</div>  
+			</div>
+			<div>&nbsp;</div>
+			<div>&nbsp;</div>
+			<div id="rating" class="flex-column" style="text-align: center;">
+				<h4 class="fw-bolder">Rate the book</h4>
+				<div class="shadow-sm p-3 mb-5 bg-body rounded-2" style="display: inline-block;">
+					<div class="rate">
+						<% for (var i = 5; i > userRating; i--) { %>
+							<input type="radio" id="star<%= i %>" name="rate"/>
+							<label for="star<%= i %>" title="<%= i %>" class="mx-3 fa fa-2x fa-star"></label>
+						<% } %>
+						<% if (userRating > 0) { %>
+							<input type="radio" id="star<%= userRating %>" name="rate" checked/>
+							<label for="star<%= userRating %>" title="<%= userRating %>" class="mx-3 fa fa-2x fa-star"></label>
+						<% } %>
+						<% for (var i = userRating - 1; i > 0; i--) { %>
+							<input type="radio" id="star<%= i %>" name="rate"/>
+							<label for="star<%= i %>" title="<%= i %>" class="mx-3 fa fa-2x fa-star"></label>
+						<% } %>
+					</div>
+					<form id="formRating" action="/user/rateBook" method="post">
+						<input class="d-none" type="text" id="formRatingValue" name="rating"/>
+						<input class="d-none" type="text" name="bookID" value="<%= book._id.toString() %>"/>
+						<input class="d-none" type="text" name="uri" value="/books/book-details?id=<%= book._id.toString() %>"/>
+					</form>
+				</div>
+			</div>
+			<div class="mx-5 my-5">
+				<h4 class="fw-bolder">Description</h4>
+				<div>&nbsp;</div>
+				<h7 class="fw-light" style="color: #979592; overflow-wrap: break-word; word-wrap:break-word;"><%= book.description %></h7>
+				<div>&nbsp;</div>
+			</div>
+		</div>
 
-    <footer>
-        <%- include('./partials/footer'); %>
-    </footer>
+		<footer>
+			<%- include('./partials/footer'); %>
+		</footer>
+	
+		<script>
+			var popup = document.getElementById("myPopup");
+			var btn = document.getElementById("borrowBtn");
+			var cancel = document.getElementById("cancelBtn");
+			btn.onclick = function() {
+				popup.style.display = "block";
+			}
+			cancel.onclick = function() {
+				popup.style.display = "none";
+			}
 
-    <script>
-        var popup = document.getElementById("myPopup");
-        var btn = document.getElementById("borrowBtn");
-        var cancel = document.getElementById("cancelBtn");
-        btn.onclick = function () {
-            popup.style.display = "block";
-        }
-        cancel.onclick = function () {
-            popup.style.display = "none";
-        }
-
-        var ratingForm = document.getElementById("formRating");
-        var ratingValue = document.getElementById("formRatingValue");
-        $("#star1").click(function () {
-            if ($(this).is(':checked')) {
-                ratingValue.value = 1
-                ratingForm.submit()
-            }
-        });
-        $("#star2").click(function () {
-            if ($(this).is(':checked')) {
-                ratingValue.value = 2
-                ratingForm.submit()
-            }
-        });
-        $("#star3").click(function () {
-            if ($(this).is(':checked')) {
-                ratingValue.value = 3
-                ratingForm.submit()
-            }
-        });
-        $("#star4").click(function () {
-            if ($(this).is(':checked')) {
-                ratingValue.value = 4
-                ratingForm.submit()
-            }
-        });
-        $("#star5").click(function () {
-            if ($(this).is(':checked')) {
-                ratingValue.value = 5
-                ratingForm.submit()
-            }
-        });
-    </script>
-</body>
-
+			var ratingForm = document.getElementById("formRating");
+			var ratingValue = document.getElementById("formRatingValue");
+			$("#star1").click( function(){
+				if( $(this).is(':checked') ) {
+					ratingValue.value = 1
+					ratingForm.submit()
+				}
+			});
+			$("#star2").click( function(){
+				if( $(this).is(':checked') ) {
+					ratingValue.value = 2
+					ratingForm.submit()
+				}
+			});
+			$("#star3").click( function(){
+				if( $(this).is(':checked') ) {
+					ratingValue.value = 3
+					ratingForm.submit()
+				}
+			});
+			$("#star4").click( function(){
+				if( $(this).is(':checked') ) {
+					ratingValue.value = 4
+					ratingForm.submit()
+				}
+			});
+			$("#star5").click( function(){
+				if( $(this).is(':checked') ) {
+					ratingValue.value = 5
+					ratingForm.submit()
+				}
+			});
+		</script>
+	</body>
 </html>

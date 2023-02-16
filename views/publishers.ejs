@@ -1,146 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
+  <head>
     <%- include('./partials/head'); %>
-</head>
+  </head>
 
-<body>
+  <body>
     <header>
-        <%- include('./partials/nav'); %>
+      <%- include('./partials/nav'); %>
     </header>
 
     <main>
-        <h2 class="fw-bold my-5" style="text-align: center;">MY PROFILE</h2>
+        <h2 class="fw-bold mt-5 ms-5" style="text-align: center; font-size: 45;">PUBLISHERS</h2>
 
-        <div id="content" class="container" style="min-height: 63vh;">
-            <div class="row d-flex my-5 bg-white rounded-4" style="min-height: auto;" id="profile">
-                <img src="<%= user.image %>" alt="User Avatar" class="col-auto m-5 px-0 rounded-circle"
-                    style="width: 200px; height: 200px;">
-                <div class="col-6 my-5 ps-0">
-                    <h1 class="fw-semibold mb-5">
-                        <%= user.fullName %>
-                    </h1>
-                    <h5>Email: <%= user.email %>
-                    </h5>
-                    <h5>Date of Birth: <%= user.dob.toString().substring(4, 15) %>
-                    </h5>
-                    <h5>Address: <%= user.address %>
-                    </h5>
-                    <% if (subscription && user.subscriptionStatus==true) { %>
-                        <h5>Type of Subscription: <%= subscription.name %> / <%= subscription.type %>
-                        </h5>
-                        <% var subcrEXP=user.paymentStatus; %>
-                            <% if (subscription.type=='Monthly' ) { subcrEXP.setMonth(user.paymentStatus.getMonth() +
-                                1); %>
-                                <h5>Expiration date: <%= subcrEXP.toString().substring(4, 15) %>
-                                </h5>
-                                <% } else if (subscription.type=='Annual' ) {
-                                    subcrEXP.setYear(user.paymentStatus.getYear() + 1); %>
-                                    <h5>Expiration date: <%= subcrEXP.toString().substring(4, 15) %>
-                                    </h5>
-                                    <% } else { %>
-                                        <h5>Expiration date: TBA</h5>
-                                        <% } %>
-                                            <% } else if (subscription && user.subscriptionStatus==false) { %>
-                                                <h5>Type of Subscription: Pending</h5>
-                                                <h5>Expiration date: TBA</h5>
-                                                <% } else { %>
-                                                    <h5>Type of Subscription: None</h5>
-                                                    <h5>Expiration date: TBA</h5>
-                                                    <% } %>
-                                                        <h5>Violation time(s): <%= user.warning %>
-                                                        </h5>
-                                                        <% if (user.warning < 3) { %>
-                                                            <h5>Status: Active</h5>
-                                                            <% } else { %>
-                                                                <h5>Status: Banned</h5>
-                                                                <% } %>
-                </div>
-                <div class="col-auto px-0">
-                    <a href="profile-edit" class="mt-5 me-5 btn enabledbtn">Edit profile</a>
-                    <form class="mt-5" action="subscribe" method="post">
-                        <input class="d-none" type="text" name="status" value="0" />
-                        <input class="btn enabledbtn" type="submit" name="upvote" value="Change subscription plan" />
-                    </form>
-                </div>
-            </div>
-            <div class="row my-5 bg-white rounded-4" id="borrowingbooks">
-                <h2 class="fw-bold mt-5 ms-5">BORROWING BOOKS</h2>
-                <div id="carouselBorrowing" class="carousel slide">
-                    <div class="carousel-inner">
-                        <div class="carousel-item active">
-                            <div class="carousel-row row m-5 justify-content-around">
-                                <% for (var i=0; i < borrowing.length; i++) { %>
-                                    <form class="col-2 preview" action="/books/book-details" method="get">
-                                        <input class="rounded-4 img-medium" type="image" src="<%= borrowing[i].image %>"
-                                            alt="Submit" />
-                                        <input readonly class="d-none" type="text" name="id"
-                                            value="<%= borrowing[i]._id %>" />
-                                        <input readonly class="row fw-bold mt-3 text text-title" type="text"
-                                            value="<%= borrowing[i].name %>" />
-                                        <input readonly class="row fw-light text text-subtitle" type="text"
-                                            value="Borrow date: <%= borrowingDate[i].toString().substring(4, 15) %>" />
-                                        <input readonly class="row fw-light text text-subtitle" type="text"
-                                            value="Return date: <%= returningDate[i].toString().substring(4, 15) %>" />
-                                    </form>
-                                    <% } %>
+        <div class="mt-4 my-5 mr-5 d-flex justify-content-end container">
+            <div class="btn px-4 py-2 chooseplanbtn enabledbtn fw-normal" style="font-size: 18px; color: black;" href="">Filter <span class="fa fa-sliders"></span></div>
+        </div>
+
+        <div id="content" class="container bg-white rounded-4 my-5" style="min-height: 63vh; width: auto;">
+            <div id="publishersCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner" role="listbox">
+                    <div class="carousel-item active px-5">
+                        <% for (var i = 0; i < 2; i++) { %>
+                        <div class="carousel-row row m-5 justify-content-around">
+                            <% for (var j = i * 4; j < i  * 4 + 4; j++) { %>
+                            <% if (j >= publishers.length) { break; } %>
+                            <div class="col-2 text-center preview">
+                                <img src="<%= publishers[j].image %>" alt="Author Avatar" class="rounded-4" style="width: 180px; height: 260px;">
+                                <h5 class="fw-bold mt-3 text text-title"><%= publishers[j].name %></h5>
                             </div>
+                            <% } %>
                         </div>
+                        <% } %>
                     </div>
-                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselBorrowing"
-                        data-bs-slide="prev">
-                        <span class="fa fa-angle-left fa-4x" style="color: #8B8B8B;"></span>
-                        <span class="visually-hidden">Previous</span>
-                    </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#carouselBorrowing"
-                        data-bs-slide="next">
-                        <span class="fa fa-angle-right fa-4x" style="color: #8B8B8B;"></span>
-                        <span class="visually-hidden">Next</span>
-                    </button>
-                </div>
-            </div>
-            <div class="row my-5 bg-white rounded-4" id="borrowedbooks">
-                <h2 class="fw-bold mt-5 ms-5">BORROWED BOOKS</h2>
-                <div id="carouselBorrowed" class="carousel slide">
-                    <div class="carousel-inner">
-                        <div class="carousel-item active">
-                            <div class="carousel-row row m-5 justify-content-around">
-                                <% for (var i=0; i < borrowed.length; i++) { %>
-                                    <form class="col-2 preview" action="/books/book-details" method="get">
-                                        <input class="rounded-4 img-medium" type="image" src="<%= borrowed[i].image %>"
-                                            alt="Submit" />
-                                        <input readonly class="d-none" type="text" name="id"
-                                            value="<%= borrowed[i]._id %>" />
-                                        <input readonly class="row fw-bold mt-3 text text-title" type="text"
-                                            value="<%= borrowed[i].name %>" />
-                                        <input readonly class="row fw-light text text-subtitle" type="text"
-                                            value="Borrow date: <%= borrowedDate[i].toString().substring(4, 15) %>" />
-                                        <input readonly class="row fw-light text text-subtitle" type="text"
-                                            value="Return date: <%= returnedDate[i].toString().substring(4, 15) %>" />
-                                    </form>
-                                    <% } %>
+                    <% for (var i = 8; i < publishers.length; i += 8) { %>
+                    <div class="carousel-item px-5">
+                        <% for (var j = 0; j < 2; j++) { %>
+                        <div class="carousel-row row m-5 justify-content-around">
+                            <% for (var k = i + j * 4; k < i + j * 4 + 4; k++) { %>
+                            <% if (k >= publishers.length) { break; } %>
+                            <div class="col-2 text-center preview">
+                                <img src="<%= publishers[k].image %>" alt="Author Avatar" class="rounded-4" style="width: 180px; height: 260px;">
+                                <h5 class="fw-bold mt-3 text text-title"><%= publishers[k].name %></h5>
                             </div>
+                            <% } %>
                         </div>
+                        <% } %>
                     </div>
-                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselBorrowed"
-                        data-bs-slide="prev">
-                        <span class="fa fa-angle-left fa-4x" style="color: #8B8B8B;"></span>
-                        <span class="visually-hidden">Previous</span>
-                    </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#carouselBorrowed"
-                        data-bs-slide="next">
-                        <span class="fa fa-angle-right fa-4x" style="color: #8B8B8B;"></span>
-                        <span class="visually-hidden">Next</span>
-                    </button>
+                    <% } %>
                 </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#publishersCarousel" data-bs-slide="prev">
+                    <span class="fa fa-angle-left fa-4x" style="color: #8B8B8B;"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#publishersCarousel" data-bs-slide="next">
+                    <span class="fa fa-angle-right fa-4x" style="color: #8B8B8B;"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
             </div>
         </div>
     </main>
 
     <footer>
-        <%- include('./partials/footer'); %>
+      <%- include('./partials/footer'); %>
     </footer>
-</body>
-
+  </body>
 </html>
