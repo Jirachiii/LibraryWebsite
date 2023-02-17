@@ -68,9 +68,31 @@ const userSchema = mongoose.Schema(
         }
     }
 )
+const userTypeSchema = mongoose.Schema(
+    {
+        longestBorrowDate: {
+            type: Number
+        },
+        maxBook: {
+            type: Number
+        },
+        monthlyPrice: {
+            type: Number
+        },
+        typeName: {
+            type: String
+        },
+        yearlyPrice: {
+            type: Number
+        }
+    }
+)
 
+
+const UserType = mongoose.model('UserType', userTypeSchema,'userType')
 const User = mongoose.model('User', userSchema, 'user')
 
 export {
-    User
+    User,
+    UserType
 }

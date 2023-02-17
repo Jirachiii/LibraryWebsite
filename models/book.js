@@ -8,7 +8,6 @@ const bookTagSchema = mongoose.Schema(
         }
     }
 )
-const BookTag = mongoose.model('BookTag', bookTagSchema, 'bookTag')
 
 const bookSchema = mongoose.Schema(
     {
@@ -55,7 +54,6 @@ const bookSchema = mongoose.Schema(
         },
     }
 )
-const Book = mongoose.model('Book', bookSchema, 'book')
 
 const bookCopySchema = mongoose.Schema(
     {
@@ -75,6 +73,8 @@ const bookCopySchema = mongoose.Schema(
     }
 )
 const BookCopy = mongoose.model('BookCopy', bookCopySchema, 'bookCopy')
+const BookTag = mongoose.model('BookTag', bookTagSchema, 'bookTag')
+const Book = mongoose.model('Book', bookSchema, 'book')
 
 export {
     Book,

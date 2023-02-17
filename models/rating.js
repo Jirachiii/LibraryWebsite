@@ -14,7 +14,7 @@ const ratingSchema = mongoose.Schema(
         },
         rating: {
             type: Number,
-            require: [true,'Please rating value'],
+            require: [true,'Please enter rating value'],
         }
     }
 )

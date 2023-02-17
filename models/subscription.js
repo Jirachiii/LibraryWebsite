@@ -16,11 +16,11 @@ const subscriptionSchema = mongoose.Schema(
         },
         borrowAmount: {
             type: Number,
-            default: null
+            default: 5
         },
         borrowDuration: {
             type: Number,
-            default: null
+            default: 30
         }
     }
 )

@@ -18,6 +18,8 @@ const notiSchema = mongoose.Schema (
     }
 )
 
-const noti = mongoose.model('notiSchema', notiSchema)
+const Notification = mongoose.model('notiSchema', notiSchema)
 
-module.exports = noti
+export {
+    Notification
+}
