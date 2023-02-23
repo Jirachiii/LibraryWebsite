@@ -46,7 +46,7 @@ const bookSchema = mongoose.Schema(
         },
         image: {
             type: String,
-            default: "/images/book-cover-demo.webp"
+            default: "/images/book-cover-demo.jpg"
         },
         timesBorrowed: {
             type: Number,
