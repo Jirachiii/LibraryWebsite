@@ -292,13 +292,15 @@ const borrowBook = asyncHandler(async (req, res, next) => {
         const usr = req.user;
 
         let borrowDate = Date.now()
-
+        console.log("No order found1")
         const order = await Order.findOne({ user: req.user._id })
         const book = await Book.findOne({_id: mongoose.Types.ObjectId(id)})
         const copy = await BookCopy.findOne({ book: book._id, status: false})
-
+        console.log("No order found2")
         var borrowingCount = 0
-        order.status.forEach((isBorrowing) => { if (isBorrowing) { borrowingCount++ } });
+        if(order) {
+            order.status.forEach((isBorrowing) => { if (isBorrowing) { borrowingCount++ } });
+        }
 
         if (borrowingCount >= usr.maxAvailable) {
             return res.status(400).send('Ran out of book borrow quota');
@@ -309,11 +311,11 @@ const borrowBook = asyncHandler(async (req, res, next) => {
         if (usr.subscriptionStatus != true) {
             return res.status(400).send('Plz subscribe to a plan');
         }
+        const subscription = await Subscription.findOne({ _id: usr.subscription });
+        let returnDate = borrowDate + subscription.borrowDuration * 24 * 60 * 60 * 1000;
 
         if (order) {
-            const subscription = await Subscription.findOne({ _id: usr.subscription });
-            let returnDate = borrowDate + subscription.borrowDuration * 24 * 60 * 60 * 1000;
-
+            
             var index = order.book.length
             for (var i = 0; i < order.book.length; i++) {
                 if (order.book[i].equals(book._id)) {
@@ -352,6 +354,7 @@ const borrowBook = asyncHandler(async (req, res, next) => {
                 }
             })
         } else {
+            console.log("No order found");
             await Order.create({
                 user: usr._id,
                 book: [book._id],
